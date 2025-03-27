@@ -1,0 +1,1 @@
+ALTER TABLE "candidates" ADD COLUMN "deleted" boolean DEFAULT false;

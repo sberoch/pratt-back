@@ -1,0 +1,1 @@
+ALTER TABLE "candidates" ALTER COLUMN "stars" SET DATA TYPE numeric;
