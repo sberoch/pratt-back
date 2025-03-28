@@ -1,11 +1,4 @@
-import {
-  pgTable,
-  serial,
-  text,
-  integer,
-  boolean,
-  date,
-} from 'drizzle-orm/pg-core';
+import { pgTable, serial, text } from 'drizzle-orm/pg-core';
 
 export const areas = pgTable('areas', {
   id: serial('id').primaryKey(),

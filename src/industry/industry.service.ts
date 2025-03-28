@@ -1,5 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
+import {
+  industries,
+  Industry,
+} from 'src/common/database/schemas/industry.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
@@ -14,10 +18,6 @@ import {
   IndustryQueryParams,
   UpdateIndustryDto,
 } from './industry.dto';
-import {
-  industries,
-  Industry,
-} from 'src/common/database/schemas/industry.schema';
 
 @Injectable()
 export class IndustryService {

@@ -1,11 +1,4 @@
-import {
-  pgTable,
-  serial,
-  text,
-  integer,
-  boolean,
-  date,
-} from 'drizzle-orm/pg-core';
+import { pgTable, serial, text } from 'drizzle-orm/pg-core';
 
 export const candidateFiles = pgTable('candidate_files', {
   id: serial('id').primaryKey(),

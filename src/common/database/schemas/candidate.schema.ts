@@ -1,18 +1,18 @@
 import {
+  boolean,
+  date,
+  integer,
+  numeric,
   pgTable,
   serial,
   text,
-  integer,
-  boolean,
-  date,
-  numeric,
 } from 'drizzle-orm/pg-core';
 
-import { candidateSources } from './candidatesource.schema';
-import { seniorities } from './seniority.schema';
 import { areas } from './area.schema';
-import { industries } from './industry.schema';
 import { candidateFiles } from './candidatefile.schema';
+import { candidateSources } from './candidatesource.schema';
+import { industries } from './industry.schema';
+import { seniorities } from './seniority.schema';
 
 export const candidates = pgTable('candidates', {
   id: serial('id').primaryKey(),

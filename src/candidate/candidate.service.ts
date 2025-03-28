@@ -9,11 +9,10 @@ import {
   gte,
   ilike,
   lte,
-  not,
   sql,
   SQL,
 } from 'drizzle-orm';
-import { DrizzleProvider } from '../common/database/drizzle.module';
+import { areas } from 'src/common/database/schemas/area.schema';
 import {
   Candidate,
   candidateAreas,
@@ -22,6 +21,11 @@ import {
   candidates,
   candidateSeniorities,
 } from 'src/common/database/schemas/candidate.schema';
+import { candidateFiles } from 'src/common/database/schemas/candidatefile.schema';
+import { candidateSources } from 'src/common/database/schemas/candidatesource.schema';
+import { industries } from 'src/common/database/schemas/industry.schema';
+import { seniorities } from 'src/common/database/schemas/seniority.schema';
+import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
 import {
@@ -31,15 +35,10 @@ import {
   withPagination,
 } from '../common/pagination/pagination.utils';
 import {
-  CreateCandidateDto,
   CandidateQueryParams,
+  CreateCandidateDto,
   UpdateCandidateDto,
 } from './candidate.dto';
-import { candidateSources } from 'src/common/database/schemas/candidatesource.schema';
-import { seniorities } from 'src/common/database/schemas/seniority.schema';
-import { areas } from 'src/common/database/schemas/area.schema';
-import { industries } from 'src/common/database/schemas/industry.schema';
-import { candidateFiles } from 'src/common/database/schemas/candidatefile.schema';
 
 @Injectable()
 export class CandidateService {

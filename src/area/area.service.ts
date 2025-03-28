@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
+import { Area, areas } from 'src/common/database/schemas/area.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
@@ -9,8 +10,7 @@ import {
   PaginationQuery,
   withPagination,
 } from '../common/pagination/pagination.utils';
-import { CreateAreaDto, AreaQueryParams, UpdateAreaDto } from './area.dto';
-import { areas, Area } from 'src/common/database/schemas/area.schema';
+import { AreaQueryParams, CreateAreaDto, UpdateAreaDto } from './area.dto';
 
 @Injectable()
 export class AreaService {

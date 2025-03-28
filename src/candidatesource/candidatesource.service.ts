@@ -1,5 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
+import {
+  CandidateSource,
+  candidateSources,
+} from 'src/common/database/schemas/candidatesource.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
@@ -10,14 +14,10 @@ import {
   withPagination,
 } from '../common/pagination/pagination.utils';
 import {
-  CreateCandidateSourceDto,
   CandidateSourceQueryParams,
+  CreateCandidateSourceDto,
   UpdateCandidateSourceDto,
 } from './candidatesource.dto';
-import {
-  candidateSources,
-  CandidateSource,
-} from 'src/common/database/schemas/candidatesource.schema';
 
 @Injectable()
 export class CandidateSourceService {

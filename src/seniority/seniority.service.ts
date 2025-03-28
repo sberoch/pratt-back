@@ -1,5 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
+import {
+  seniorities,
+  Seniority,
+} from 'src/common/database/schemas/seniority.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
@@ -14,10 +18,6 @@ import {
   SeniorityQueryParams,
   UpdateSeniorityDto,
 } from './seniority.dto';
-import {
-  seniorities,
-  Seniority,
-} from 'src/common/database/schemas/seniority.schema';
 
 @Injectable()
 export class SeniorityService {
