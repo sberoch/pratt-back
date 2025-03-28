@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
-import { Area, areas } from 'src/common/database/schemas/area.schema';
+import { Area, areas } from '../common/database/schemas/area.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';

@@ -8,7 +8,7 @@ import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
 import {
   CandidateFile,
   candidateFiles,
-} from 'src/common/database/schemas/candidatefile.schema';
+} from '../common/database/schemas/candidatefile.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
