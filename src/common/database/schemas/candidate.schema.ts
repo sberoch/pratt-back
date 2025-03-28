@@ -7,6 +7,7 @@ import {
   serial,
   text,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 import { areas } from './area.schema';
 import { candidateFiles } from './candidatefile.schema';
@@ -34,6 +35,17 @@ export const candidates = pgTable('candidates', {
   blacklisted: boolean('blacklisted').default(false),
 });
 
+export const candidatesRelations = relations(candidates, ({ one, many }) => ({
+  source: one(candidateSources, {
+    fields: [candidates.sourceId],
+    references: [candidateSources.id],
+  }),
+  candidateAreas: many(candidateAreas),
+  candidateIndustries: many(candidateIndustries),
+  candidateSeniorities: many(candidateSeniorities),
+  candidateFilesRelation: many(candidateFilesRelation),
+}));
+
 export const candidateAreas = pgTable('candidate_areas', {
   id: serial('id').primaryKey(),
   candidateId: integer('candidate_id')
@@ -43,6 +55,17 @@ export const candidateAreas = pgTable('candidate_areas', {
     .references(() => areas.id, { onDelete: 'cascade' })
     .notNull(),
 });
+
+export const candidateAreasRelations = relations(candidateAreas, ({ one }) => ({
+  candidate: one(candidates, {
+    fields: [candidateAreas.candidateId],
+    references: [candidates.id],
+  }),
+  area: one(areas, {
+    fields: [candidateAreas.areaId],
+    references: [areas.id],
+  }),
+}));
 
 export const candidateIndustries = pgTable('candidate_industries', {
   id: serial('id').primaryKey(),
@@ -54,6 +77,20 @@ export const candidateIndustries = pgTable('candidate_industries', {
     .notNull(),
 });
 
+export const candidateIndustriesRelations = relations(
+  candidateIndustries,
+  ({ one }) => ({
+    candidate: one(candidates, {
+      fields: [candidateIndustries.candidateId],
+      references: [candidates.id],
+    }),
+    industry: one(industries, {
+      fields: [candidateIndustries.industryId],
+      references: [industries.id],
+    }),
+  }),
+);
+
 export const candidateSeniorities = pgTable('candidate_seniorities', {
   id: serial('id').primaryKey(),
   candidateId: integer('candidate_id')
@@ -64,6 +101,20 @@ export const candidateSeniorities = pgTable('candidate_seniorities', {
     .notNull(),
 });
 
+export const candidateSenioritiesRelations = relations(
+  candidateSeniorities,
+  ({ one }) => ({
+    candidate: one(candidates, {
+      fields: [candidateSeniorities.candidateId],
+      references: [candidates.id],
+    }),
+    seniority: one(seniorities, {
+      fields: [candidateSeniorities.seniorityId],
+      references: [seniorities.id],
+    }),
+  }),
+);
+
 export const candidateFilesRelation = pgTable('candidate_candidate_files', {
   id: serial('id').primaryKey(),
   candidateId: integer('candidate_id')
@@ -73,6 +124,20 @@ export const candidateFilesRelation = pgTable('candidate_candidate_files', {
     .references(() => candidateFiles.id, { onDelete: 'cascade' })
     .notNull(),
 });
+
+export const candidateFilesRelationRelations = relations(
+  candidateFilesRelation,
+  ({ one }) => ({
+    candidate: one(candidates, {
+      fields: [candidateFilesRelation.candidateId],
+      references: [candidates.id],
+    }),
+    file: one(candidateFiles, {
+      fields: [candidateFilesRelation.fileId],
+      references: [candidateFiles.id],
+    }),
+  }),
+);
 
 export type Candidate = typeof candidates.$inferSelect;
 export type NewCandidate = typeof candidates.$inferInsert;

@@ -1,18 +1,22 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   and,
   asc,
   count,
   desc,
   eq,
-  exists,
   gte,
   ilike,
+  inArray,
   lte,
-  sql,
   SQL,
 } from 'drizzle-orm';
-import { areas } from 'src/common/database/schemas/area.schema';
+import { Area } from 'src/common/database/schemas/area.schema';
 import {
   Candidate,
   candidateAreas,
@@ -21,18 +25,16 @@ import {
   candidates,
   candidateSeniorities,
 } from 'src/common/database/schemas/candidate.schema';
-import { candidateFiles } from 'src/common/database/schemas/candidatefile.schema';
-import { candidateSources } from 'src/common/database/schemas/candidatesource.schema';
-import { industries } from 'src/common/database/schemas/industry.schema';
-import { seniorities } from 'src/common/database/schemas/seniority.schema';
+import { CandidateFile } from 'src/common/database/schemas/candidatefile.schema';
+import { CandidateSource } from 'src/common/database/schemas/candidatesource.schema';
+import { Industry } from 'src/common/database/schemas/industry.schema';
+import { Seniority } from 'src/common/database/schemas/seniority.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
 import {
   buildPaginationQuery,
   paginatedResponse,
-  PaginationQuery,
-  withPagination,
 } from '../common/pagination/pagination.utils';
 import {
   CandidateQueryParams,
@@ -40,182 +42,81 @@ import {
   UpdateCandidateDto,
 } from './candidate.dto';
 
+type CandidateQueryResult = Candidate & {
+  source: CandidateSource;
+  candidateAreas: Array<{ area: Area }>;
+  candidateIndustries: Array<{ industry: Industry }>;
+  candidateSeniorities: Array<{ seniority: Seniority }>;
+  candidateFilesRelation: Array<{ file: CandidateFile }>;
+};
+
+export type CandidateApiResponse = Omit<Candidate, 'deleted'> & {
+  source: CandidateSource;
+  areas: Area[];
+  industries: Industry[];
+  seniorities: Seniority[];
+  files: CandidateFile[];
+};
+
 @Injectable()
 export class CandidateService {
   constructor(@Inject(DrizzleProvider) private readonly db: DrizzleDatabase) {}
 
   async findAll(
     params: CandidateQueryParams,
-  ): Promise<PaginatedResponse<Candidate>> {
+  ): Promise<PaginatedResponse<CandidateApiResponse>> {
     const paginationQuery = buildPaginationQuery(params);
+    const whereClause = this.buildWhereClause(params);
+    const orderClause = this.buildOrderBy(params);
 
-    let itemsQuery = this.db
-      .select({
-        candidateId: candidates.id,
-        name: candidates.name,
-        image: candidates.image,
-        dateOfBirth: candidates.dateOfBirth,
-        gender: candidates.gender,
-        shortDescription: candidates.shortDescription,
-        email: candidates.email,
-        linkedin: candidates.linkedin,
-        address: candidates.address,
-        documentNumber: candidates.documentNumber,
-        phone: candidates.phone,
-        stars: candidates.stars,
-        blacklisted: candidates.blacklisted,
-        source: candidateSources,
-        seniorities: sql<string>`json_agg(distinct ${seniorities})`.as(
-          'seniorities',
-        ),
+    const itemsQuery = this.db.query.candidates.findMany({
+      where: whereClause,
+      orderBy: orderClause,
+      limit: paginationQuery.limit,
+      offset: paginationQuery.offset,
+      with: {
+        source: true,
+        candidateAreas: { with: { area: true } },
+        candidateIndustries: { with: { industry: true } },
+        candidateSeniorities: { with: { seniority: true } },
+        candidateFilesRelation: { with: { file: true } },
+      },
+    });
 
-        areas: sql<string>`json_agg(distinct ${areas})`.as('areas'),
-        industries: sql<string>`json_agg(distinct ${industries})`.as(
-          'industries',
-        ),
-        files: sql<string>`json_agg(distinct ${candidateFiles})`.as('files'),
-        deleted: candidates.deleted,
-      })
+    const countQuery = this.db
+      .select({ count: count(candidates.id) })
       .from(candidates)
-      // .where(eq(candidates.deleted, false))
-      .leftJoin(candidateSources, eq(candidateSources.id, candidates.sourceId))
-      .leftJoin(
-        candidateSeniorities,
-        eq(candidateSeniorities.candidateId, candidates.id),
-      )
-      .leftJoin(
-        seniorities,
-        eq(seniorities.id, candidateSeniorities.seniorityId),
-      )
-      .leftJoin(candidateAreas, eq(candidateAreas.candidateId, candidates.id))
-      .leftJoin(areas, eq(areas.id, candidateAreas.areaId))
-      .leftJoin(
-        candidateIndustries,
-        eq(candidateIndustries.candidateId, candidates.id),
-      )
-      .leftJoin(industries, eq(industries.id, candidateIndustries.industryId))
-      .leftJoin(
-        candidateFilesRelation,
-        eq(candidateFilesRelation.candidateId, candidates.id),
-      )
-      .leftJoin(
-        candidateFiles,
-        eq(candidateFiles.id, candidateFilesRelation.fileId),
-      )
-      .groupBy(candidates.id, candidateSources.id)
-      .$dynamic();
-
-    itemsQuery = this.withFilters(itemsQuery, params);
-    itemsQuery = this.withOrder(itemsQuery, paginationQuery);
-    itemsQuery = withPagination(itemsQuery, paginationQuery);
-
-    let countQuery = this.db.select({ count: count() }).from(candidates);
-    countQuery = this.withFilters(countQuery, params);
+      .where(whereClause);
 
     const [items, [{ count: totalItems }]] = await Promise.all([
       itemsQuery,
       countQuery,
     ]);
 
-    const parsedItems = items.map((item) => ({
-      id: item.candidateId,
-      sourceId: item.source?.id || null,
-      ...item,
-      seniorities: Array.isArray(item.seniorities)
-        ? item.seniorities.filter(Boolean)
-        : [],
-      areas: Array.isArray(item.areas) ? item.areas.filter(Boolean) : [],
-      industries: Array.isArray(item.industries)
-        ? item.industries.filter(Boolean)
-        : [],
-      files: Array.isArray(item.files) ? item.files.filter(Boolean) : [],
-    }));
-
+    const parsedItems = items.map(this.transformQueryResult);
     return paginatedResponse(parsedItems, totalItems, paginationQuery);
   }
 
   async findOne(id: number) {
-    const candidate = await this.db
-      .select({
-        candidateId: candidates.id,
-        name: candidates.name,
-        image: candidates.image,
-        dateOfBirth: candidates.dateOfBirth,
-        gender: candidates.gender,
-        shortDescription: candidates.shortDescription,
-        email: candidates.email,
-        linkedin: candidates.linkedin,
-        address: candidates.address,
-        documentNumber: candidates.documentNumber,
-        phone: candidates.phone,
-        stars: candidates.stars,
-        blacklisted: candidates.blacklisted,
-        source: candidateSources,
-        seniorities: sql<string>`json_agg(distinct ${seniorities})`.as(
-          'seniorities',
-        ),
-        areas: sql<string>`json_agg(distinct ${areas})`.as('areas'),
-        industries: sql<string>`json_agg(distinct ${industries})`.as(
-          'industries',
-        ),
-        files: sql<string>`json_agg(distinct ${candidateFiles})`.as('files'),
-      })
-      .from(candidates)
-      .leftJoin(candidateSources, eq(candidateSources.id, candidates.sourceId))
-      .leftJoin(
-        candidateSeniorities,
-        eq(candidateSeniorities.candidateId, candidates.id),
-      )
-      .leftJoin(
-        seniorities,
-        eq(seniorities.id, candidateSeniorities.seniorityId),
-      )
-      .leftJoin(candidateAreas, eq(candidateAreas.candidateId, candidates.id))
-      .leftJoin(areas, eq(areas.id, candidateAreas.areaId))
-      .leftJoin(
-        candidateIndustries,
-        eq(candidateIndustries.candidateId, candidates.id),
-      )
-      .leftJoin(industries, eq(industries.id, candidateIndustries.industryId))
-      .leftJoin(
-        candidateFilesRelation,
-        eq(candidateFilesRelation.candidateId, candidates.id),
-      )
-      .leftJoin(
-        candidateFiles,
-        eq(candidateFiles.id, candidateFilesRelation.fileId),
-      )
-      .where(and(eq(candidates.id, id), eq(candidates.deleted, false)))
-      .groupBy(candidates.id, candidateSources.id)
-      .limit(1);
-
-    if (!candidate.length) throw new NotFoundException('Not found');
-
-    return {
-      ...candidate[0],
-      sourceId: candidate[0].source?.id || null,
-      seniorities: Array.isArray(candidate[0].seniorities)
-        ? candidate[0].seniorities.filter(Boolean)
-        : [],
-      areas: Array.isArray(candidate[0].areas)
-        ? candidate[0].areas.filter(Boolean)
-        : [],
-      industries: Array.isArray(candidate[0].industries)
-        ? candidate[0].industries.filter(Boolean)
-        : [],
-      files: Array.isArray(candidate[0].files)
-        ? candidate[0].files.filter(Boolean)
-        : [],
-    };
+    const candidate = await this.db.query.candidates.findFirst({
+      where: eq(candidates.id, id),
+      with: {
+        source: true,
+        candidateAreas: { with: { area: true } },
+        candidateIndustries: { with: { industry: true } },
+        candidateSeniorities: { with: { seniority: true } },
+        candidateFilesRelation: { with: { file: true } },
+      },
+    });
+    if (!candidate) throw new NotFoundException('Candidate not found');
+    return this.transformQueryResult(candidate);
   }
 
   async create(createCandidateDto: CreateCandidateDto) {
     return this.db.transaction(async (tx) => {
       const [candidate] = await tx
         .insert(candidates)
-        .values({
-          ...createCandidateDto,
-        })
+        .values({ ...createCandidateDto })
         .returning();
 
       if (!candidate) throw new Error('Error creating candidate');
@@ -284,15 +185,46 @@ export class CandidateService {
    * Helper methods for query building
    * These methods handle filtering, ordering, and pagination of post queries
    */
-  private withOrder(qb: any, query: PaginationQuery) {
-    const orderBy =
-      query.order.direction === 'asc'
-        ? asc(candidates[query.order.key])
-        : desc(candidates[query.order.key]);
-    return qb.orderBy(orderBy);
+
+  private transformQueryResult(
+    result: CandidateQueryResult,
+  ): CandidateApiResponse {
+    const {
+      candidateAreas,
+      candidateIndustries,
+      candidateSeniorities,
+      candidateFilesRelation,
+      source,
+      ...rest
+    } = result;
+    return {
+      ...rest,
+      source: result.source,
+      areas: result.candidateAreas.map((ca) => ca.area).filter(Boolean), // Extract area and filter nulls if any join issue
+      industries: result.candidateIndustries
+        .map((ci) => ci.industry)
+        .filter(Boolean),
+      seniorities: result.candidateSeniorities
+        .map((cs) => cs.seniority)
+        .filter(Boolean),
+      files: result.candidateFilesRelation
+        .map((cfj) => cfj.file)
+        .filter(Boolean),
+    };
   }
 
-  private withFilters(qb: any, query: CandidateQueryParams) {
+  private buildOrderBy(params: CandidateQueryParams): SQL[] {
+    const [sortBy, sortOrderString] = params.order?.split(':') || ['id', 'asc'];
+    const sortOrder = sortOrderString?.toLowerCase() === 'desc' ? desc : asc;
+    // Basic safety check: ensure sortBy is a valid column key
+    const column = candidates[sortBy];
+    if (column) {
+      return [sortOrder(column)];
+    }
+    throw new BadRequestException('Invalid sortBy parameter');
+  }
+
+  private buildWhereClause(query: CandidateQueryParams) {
     const filters: SQL[] = [];
     if (query.id) {
       filters.push(eq(candidates.id, query.id));
@@ -337,74 +269,53 @@ export class CandidateService {
     if (query.sourceId) {
       filters.push(eq(candidates.sourceId, query.sourceId));
     }
-    if (query.areaIds?.length) {
+
+    // Add filters for areaIds, industryIds, and seniorityIds
+    if (query.areaIds && query.areaIds.length > 0) {
+      const areaSubquery = this.db
+        .select({ candidateId: candidateAreas.candidateId })
+        .from(candidateAreas)
+        .where(inArray(candidateAreas.areaId, query.areaIds))
+        .as('area_subquery');
+
       filters.push(
-        ...query.areaIds.map((areaId) =>
-          exists(
-            this.db
-              .select()
-              .from(candidateAreas)
-              .where(
-                and(
-                  eq(candidateAreas.areaId, areaId),
-                  eq(candidateAreas.candidateId, candidates.id),
-                ),
-              ),
-          ),
+        inArray(
+          candidates.id,
+          this.db.select({ id: areaSubquery.candidateId }).from(areaSubquery),
         ),
       );
     }
 
-    if (query.industryIds?.length) {
+    if (query.industryIds && query.industryIds.length > 0) {
+      const industrySubquery = this.db
+        .select({ candidateId: candidateIndustries.candidateId })
+        .from(candidateIndustries)
+        .where(inArray(candidateIndustries.industryId, query.industryIds))
+        .as('industry_subquery');
+
       filters.push(
-        ...query.industryIds.map((industryId) =>
-          exists(
-            this.db
-              .select()
-              .from(candidateIndustries)
-              .where(
-                and(
-                  eq(candidateIndustries.industryId, industryId),
-                  eq(candidateIndustries.candidateId, candidates.id),
-                ),
-              ),
-          ),
+        inArray(
+          candidates.id,
+          this.db
+            .select({ id: industrySubquery.candidateId })
+            .from(industrySubquery),
         ),
       );
     }
 
-    if (query.fileIds?.length) {
-      filters.push(
-        ...query.fileIds.map((fileId) =>
-          exists(
-            this.db
-              .select()
-              .from(candidateFilesRelation)
-              .where(
-                and(
-                  eq(candidateFilesRelation.fileId, fileId),
-                  eq(candidateFilesRelation.candidateId, candidates.id),
-                ),
-              ),
-          ),
-        ),
-      );
-    }
+    if (query.seniorityIds && query.seniorityIds.length > 0) {
+      const senioritySubquery = this.db
+        .select({ candidateId: candidateSeniorities.candidateId })
+        .from(candidateSeniorities)
+        .where(inArray(candidateSeniorities.seniorityId, query.seniorityIds))
+        .as('seniority_subquery');
 
-    if (query.seniorityIds && query.seniorityIds?.length) {
       filters.push(
-        ...query.seniorityIds.map((seniorityId) =>
-          exists(
-            this.db
-              .select()
-              .from(candidateSeniorities)
-              .where(
-                and(
-                  eq(candidateSeniorities.seniorityId, seniorityId),
-                  eq(candidateSeniorities.candidateId, candidates.id),
-                ),
-              ),
-          ),
+        inArray(
+          candidates.id,
+          this.db
+            .select({ id: senioritySubquery.candidateId })
+            .from(senioritySubquery),
         ),
       );
     }
@@ -415,6 +326,6 @@ export class CandidateService {
       filters.push(eq(candidates.deleted, false));
     }
 
-    return qb.where(and(...filters));
+    return filters.length > 0 ? and(...filters) : undefined;
   }
 }
