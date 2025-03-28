@@ -105,6 +105,12 @@ export class CandidateQueryParams extends PaginationParams {
   @ApiProperty({ example: 'John', required: false })
   name?: string;
 
+  @ApiProperty({ example: 18, required: false })
+  minimumAge?: number;
+
+  @ApiProperty({ example: 30, required: false })
+  maximumAge?: number;
+
   @ApiProperty({ example: 'Male', required: false })
   gender?: string;
 

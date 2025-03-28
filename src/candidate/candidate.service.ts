@@ -11,6 +11,7 @@ import {
   desc,
   eq,
   gte,
+  gt,
   ilike,
   inArray,
   lte,
@@ -231,6 +232,27 @@ export class CandidateService {
     }
     if (query.name) {
       filters.push(ilike(candidates.name, `%${query.name}%`));
+    }
+    if (query.minimumAge) {
+      const currentDate = new Date();
+      const minBirthDate = new Date(
+        currentDate.getFullYear() - query.minimumAge,
+        currentDate.getMonth(),
+        currentDate.getDate(),
+      );
+      const minBirthDateString = `${minBirthDate.getFullYear()}-${String(minBirthDate.getMonth() + 1).padStart(2, '0')}-${String(minBirthDate.getDate()).padStart(2, '0')}`;
+      filters.push(lte(candidates.dateOfBirth, minBirthDateString));
+    }
+    if (query.maximumAge) {
+      const currentDate = new Date();
+      const maxBirthDate = new Date(
+        currentDate.getFullYear() - query.maximumAge - 1,
+        currentDate.getMonth(),
+        currentDate.getDate(),
+      );
+      const maxBirthDateString = `${maxBirthDate.getFullYear()}-${String(maxBirthDate.getMonth() + 1).padStart(2, '0')}-${String(maxBirthDate.getDate()).padStart(2, '0')}`;
+      console.log(maxBirthDate);
+      filters.push(gt(candidates.dateOfBirth, maxBirthDateString));
     }
     if (query.gender) {
       filters.push(ilike(candidates.gender, `%${query.gender}%`));
