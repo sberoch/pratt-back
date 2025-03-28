@@ -10,6 +10,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateCandidateDto {
   @ApiProperty({ example: 'John' })
@@ -135,24 +136,28 @@ export class CandidateQueryParams extends PaginationParams {
   @ApiProperty({ example: 1, required: false })
   sourceId?: number;
 
-  @ApiProperty({ example: [1], required: false })
+  @ApiProperty({ example: [1], required: false, type: [Number] })
   @IsArray()
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   seniorityIds?: number[];
 
-  @ApiProperty({ example: [1], required: false })
+  @ApiProperty({ example: [1], required: false, type: [Number] })
   @IsArray()
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   areaIds?: number[];
 
-  @ApiProperty({ example: [1], required: false })
+  @ApiProperty({ example: [1], required: false, type: [Number] })
   @IsArray()
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   industryIds?: number[];
 
-  @ApiProperty({ example: [1], required: false })
+  @ApiProperty({ example: [1], required: false, type: [Number] })
   @IsArray()
   @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   fileIds?: number[];
 
   @ApiProperty({ example: 3.4, required: false })
