@@ -163,11 +163,62 @@ export class CandidateService {
   }
 
   async update(id: number, updateCandidateDto: UpdateCandidateDto) {
-    const [candidate] = await this.db
-      .update(candidates)
-      .set(updateCandidateDto)
-      .where(eq(candidates.id, id))
-      .returning();
+    const candidate = await this.db.transaction(async (tx) => {
+      const [candidate] = await tx
+        .update(candidates)
+        .set(updateCandidateDto)
+        .where(eq(candidates.id, id))
+        .returning();
+
+      if (updateCandidateDto.areaIds?.length) {
+        await tx
+          .delete(candidateAreas)
+          .where(eq(candidateAreas.candidateId, id));
+        await tx.insert(candidateAreas).values(
+          updateCandidateDto.areaIds.map((areaId) => ({
+            candidateId: id,
+            areaId,
+          })),
+        );
+      }
+
+      if (updateCandidateDto.industryIds?.length) {
+        await tx
+          .delete(candidateIndustries)
+          .where(eq(candidateIndustries.candidateId, id));
+        await tx.insert(candidateIndustries).values(
+          updateCandidateDto.industryIds.map((industryId) => ({
+            candidateId: id,
+            industryId,
+          })),
+        );
+      }
+
+      if (updateCandidateDto.seniorityIds?.length) {
+        await tx
+          .delete(candidateSeniorities)
+          .where(eq(candidateSeniorities.candidateId, id));
+        await tx.insert(candidateSeniorities).values(
+          updateCandidateDto.seniorityIds.map((seniorityId) => ({
+            candidateId: id,
+            seniorityId,
+          })),
+        );
+      }
+
+      if (updateCandidateDto.fileIds?.length) {
+        await tx
+          .delete(candidateFilesRelation)
+          .where(eq(candidateFilesRelation.candidateId, id));
+        await tx.insert(candidateFilesRelation).values(
+          updateCandidateDto.fileIds.map((fileId) => ({
+            candidateId: id,
+            fileId,
+          })),
+        );
+      }
+      return candidate;
+    });
     return candidate;
   }
 
