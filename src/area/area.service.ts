@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
 import { Area, areas } from 'src/common/database/schemas/area.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
@@ -7,8 +12,6 @@ import { PaginatedResponse } from '../common/pagination/pagination.params';
 import {
   buildPaginationQuery,
   paginatedResponse,
-  PaginationQuery,
-  withPagination,
 } from '../common/pagination/pagination.utils';
 import { AreaQueryParams, CreateAreaDto, UpdateAreaDto } from './area.dto';
 
@@ -18,13 +21,20 @@ export class AreaService {
 
   async findAll(params: AreaQueryParams): Promise<PaginatedResponse<Area>> {
     const paginationQuery = buildPaginationQuery(params);
-    let itemsQuery = this.db.select().from(areas).$dynamic();
-    itemsQuery = this.withFilters(itemsQuery, params);
-    itemsQuery = this.withOrder(itemsQuery, paginationQuery);
-    itemsQuery = withPagination(itemsQuery, paginationQuery);
+    const whereClause = this.buildWhereClause(params);
+    const orderClause = this.buildOrderBy(params);
 
-    let countQuery = this.db.select({ count: count() }).from(areas);
-    countQuery = this.withFilters(countQuery, params);
+    const itemsQuery = this.db.query.areas.findMany({
+      where: whereClause,
+      orderBy: orderClause,
+      limit: paginationQuery.limit,
+      offset: paginationQuery.offset,
+    });
+
+    const countQuery = this.db
+      .select({ count: count(areas.id) })
+      .from(areas)
+      .where(whereClause);
 
     const [items, [{ count: totalItems }]] = await Promise.all([
       itemsQuery,
@@ -70,16 +80,19 @@ export class AreaService {
    * Helper methods for query building
    * These methods handle filtering, ordering, and pagination of post queries
    */
-  private withOrder(qb: any, query: PaginationQuery) {
-    const orderBy =
-      query.order.direction === 'asc'
-        ? asc(areas[query.order.key])
-        : desc(areas[query.order.key]);
-    return qb.orderBy(orderBy);
+  private buildOrderBy(params: AreaQueryParams): SQL[] {
+    const [sortBy, sortOrderString] = params.order?.split(':') || ['id', 'asc'];
+    const sortOrder = sortOrderString?.toLowerCase() === 'desc' ? desc : asc;
+    // Basic safety check: ensure sortBy is a valid column key
+    const column = areas[sortBy];
+    if (column) {
+      return [sortOrder(column)];
+    }
+    throw new BadRequestException('Invalid sortBy parameter');
   }
 
-  private withFilters(qb: any, query: AreaQueryParams) {
+  private buildWhereClause(params: AreaQueryParams) {
     const filters: SQL[] = [];
-    return qb.where(and(...filters));
+    return filters.length > 0 ? and(...filters) : undefined;
   }
 }
