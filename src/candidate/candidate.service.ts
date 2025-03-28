@@ -16,7 +16,7 @@ import {
   lte,
   SQL,
 } from 'drizzle-orm';
-import { Area } from 'src/common/database/schemas/area.schema';
+import { Area } from '../common/database/schemas/area.schema';
 import {
   Candidate,
   candidateAreas,
@@ -24,11 +24,11 @@ import {
   candidateIndustries,
   candidates,
   candidateSeniorities,
-} from 'src/common/database/schemas/candidate.schema';
-import { CandidateFile } from 'src/common/database/schemas/candidatefile.schema';
-import { CandidateSource } from 'src/common/database/schemas/candidatesource.schema';
-import { Industry } from 'src/common/database/schemas/industry.schema';
-import { Seniority } from 'src/common/database/schemas/seniority.schema';
+} from '../common/database/schemas/candidate.schema';
+import { CandidateFile } from '../common/database/schemas/candidatefile.schema';
+import { CandidateSource } from '../common/database/schemas/candidatesource.schema';
+import { Industry } from '../common/database/schemas/industry.schema';
+import { Seniority } from '../common/database/schemas/seniority.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';

@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsEmail,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -13,6 +14,7 @@ import {
 export class CreateCandidateDto {
   @ApiProperty({ example: 'John' })
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @ApiProperty({ example: 'https://example.com/image.jpg' })
@@ -22,12 +24,12 @@ export class CreateCandidateDto {
 
   @ApiProperty({ example: '1990-01-01' })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   dateOfBirth: string;
 
   @ApiProperty({ example: 'Male' })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   gender: string;
 
   @ApiProperty({ example: 'This is a short description' })
@@ -36,6 +38,7 @@ export class CreateCandidateDto {
   shortDescription: string;
 
   @ApiProperty({ example: 'johndoe@gmail.com' })
+  @IsOptional()
   @IsEmail()
   email: string;
 
@@ -60,7 +63,7 @@ export class CreateCandidateDto {
 
   @ApiProperty({ example: 1 })
   @IsInt()
-  @IsOptional()
+  @IsNotEmpty()
   sourceId: number;
 
   @ApiProperty({ example: [1], type: [Number] })
@@ -88,6 +91,7 @@ export class CreateCandidateDto {
   stars: number;
 
   @ApiProperty({ example: false })
+  @IsOptional()
   @IsBoolean()
   blacklisted: boolean;
 }
