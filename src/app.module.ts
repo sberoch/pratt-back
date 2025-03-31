@@ -11,6 +11,7 @@ import { AreaModule } from './area/area.module';
 import { IndustryModule } from './industry/industry.module';
 import { CandidateFileModule } from './candidatefile/candidatefile.module';
 import { CandidateSourceModule } from './candidatesource/candidatesource.module';
+import { CommentModule } from './comments/comment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CandidateSourceModule } from './candidatesource/candidatesource.module'
     IndustryModule,
     CandidateFileModule,
     CandidateSourceModule,
+    CommentModule,
   ],
   controllers: [AppController],
 })

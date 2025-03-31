@@ -36,6 +36,20 @@
       "when": 1743108519678,
       "tag": "0005_rapid_meteorite",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1743457527912,
+      "tag": "0006_mute_magdalene",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1743458448145,
+      "tag": "0007_wet_starfox",
+      "breakpoints": true
     }
   ]
 }
