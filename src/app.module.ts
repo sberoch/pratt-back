@@ -11,8 +11,9 @@ import { AreaModule } from './area/area.module';
 import { IndustryModule } from './industry/industry.module';
 import { CandidateFileModule } from './candidatefile/candidatefile.module';
 import { CandidateSourceModule } from './candidatesource/candidatesource.module';
-import { CommentModule } from './comments/comment.module';
+import { CommentModule } from './comment/comment.module';
 import { BlacklistModule } from './blacklist/blacklist.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { BlacklistModule } from './blacklist/blacklist.module';
     CandidateSourceModule,
     CommentModule,
     BlacklistModule,
+    SeedModule,
   ],
   controllers: [AppController],
 })

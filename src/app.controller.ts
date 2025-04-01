@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Inject } from '@nestjs/common';
 import { DrizzleProvider } from './common/database/drizzle.module';
@@ -17,5 +17,10 @@ export class AppController {
   @Get('/test')
   async test() {
     return this.db.query.candidates.findMany();
+  }
+
+  @Post('/populate-database')
+  async populateDatabase() {
+    return { status: 'Database populated' };
   }
 }

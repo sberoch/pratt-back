@@ -313,7 +313,6 @@ export class CandidateService {
         currentDate.getDate(),
       );
       const maxBirthDateString = `${maxBirthDate.getFullYear()}-${String(maxBirthDate.getMonth() + 1).padStart(2, '0')}-${String(maxBirthDate.getDate()).padStart(2, '0')}`;
-      console.log(maxBirthDate);
       filters.push(gt(candidates.dateOfBirth, maxBirthDateString));
     }
     if (query.gender) {
