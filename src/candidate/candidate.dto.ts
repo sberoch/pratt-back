@@ -2,7 +2,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import {
   IsArray,
-  IsBoolean,
+  IsBooleanString,
   IsEmail,
   IsInt,
   IsNotEmpty,
@@ -90,11 +90,6 @@ export class CreateCandidateDto {
   @ApiProperty({ example: 3.4 })
   @IsNumber()
   stars: number;
-
-  @ApiProperty({ example: false })
-  @IsOptional()
-  @IsBoolean()
-  blacklisted: boolean;
 }
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
@@ -167,8 +162,12 @@ export class CandidateQueryParams extends PaginationParams {
   maximumStars?: number;
 
   @ApiProperty({ example: false, required: false })
+  @IsOptional()
+  @IsBooleanString()
   blacklisted?: boolean;
 
   @ApiProperty({ example: false, required: false })
+  @IsOptional()
+  @IsBooleanString()
   deleted?: boolean;
 }

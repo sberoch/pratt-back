@@ -14,6 +14,8 @@ import { candidateFiles } from './candidatefile.schema';
 import { candidateSources } from './candidatesource.schema';
 import { industries } from './industry.schema';
 import { seniorities } from './seniority.schema';
+import { blacklists } from './blacklist.schema';
+import { comments } from './comment.schema';
 
 export const candidates = pgTable('candidates', {
   id: serial('id').primaryKey(),
@@ -32,7 +34,6 @@ export const candidates = pgTable('candidates', {
     onDelete: 'cascade',
   }),
   stars: numeric('stars'),
-  blacklisted: boolean('blacklisted').default(false),
 });
 
 export const candidatesRelations = relations(candidates, ({ one, many }) => ({
@@ -44,6 +45,11 @@ export const candidatesRelations = relations(candidates, ({ one, many }) => ({
   candidateIndustries: many(candidateIndustries),
   candidateSeniorities: many(candidateSeniorities),
   candidateFilesRelation: many(candidateFilesRelation),
+  blacklist: one(blacklists, {
+    fields: [candidates.id],
+    references: [blacklists.candidateId],
+  }),
+  comments: many(comments),
 }));
 
 export const candidateAreas = pgTable('candidate_areas', {

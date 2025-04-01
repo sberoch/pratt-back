@@ -16,6 +16,7 @@ import {
   inArray,
   lte,
   SQL,
+  not,
 } from 'drizzle-orm';
 import { Area } from '../common/database/schemas/area.schema';
 import {
@@ -42,6 +43,10 @@ import {
   CreateCandidateDto,
   UpdateCandidateDto,
 } from './candidate.dto';
+import {
+  Blacklist,
+  blacklists,
+} from '../common/database/schemas/blacklist.schema';
 
 type CandidateQueryResult = Candidate & {
   source: CandidateSource;
@@ -49,6 +54,7 @@ type CandidateQueryResult = Candidate & {
   candidateIndustries: Array<{ industry: Industry }>;
   candidateSeniorities: Array<{ seniority: Seniority }>;
   candidateFilesRelation: Array<{ file: CandidateFile }>;
+  blacklist: Blacklist;
 };
 
 export type CandidateApiResponse = Omit<Candidate, 'deleted'> & {
@@ -57,6 +63,7 @@ export type CandidateApiResponse = Omit<Candidate, 'deleted'> & {
   industries: Industry[];
   seniorities: Seniority[];
   files: CandidateFile[];
+  blacklist: Blacklist;
 };
 
 @Injectable()
@@ -81,6 +88,7 @@ export class CandidateService {
         candidateIndustries: { with: { industry: true } },
         candidateSeniorities: { with: { seniority: true } },
         candidateFilesRelation: { with: { file: true } },
+        blacklist: true,
       },
     });
 
@@ -107,6 +115,7 @@ export class CandidateService {
         candidateIndustries: { with: { industry: true } },
         candidateSeniorities: { with: { seniority: true } },
         candidateFilesRelation: { with: { file: true } },
+        blacklist: true,
       },
     });
     if (!candidate) throw new NotFoundException('Candidate not found');
@@ -247,6 +256,7 @@ export class CandidateService {
       candidateSeniorities,
       candidateFilesRelation,
       source,
+      blacklist,
       ...rest
     } = result;
     return {
@@ -262,6 +272,7 @@ export class CandidateService {
       files: result.candidateFilesRelation
         .map((cfj) => cfj.file)
         .filter(Boolean),
+      blacklist: result.blacklist,
     };
   }
 
@@ -337,7 +348,18 @@ export class CandidateService {
       filters.push(lte(candidates.stars, String(query.maximumStars)));
     }
     if (query.blacklisted) {
-      filters.push(eq(candidates.blacklisted, query.blacklisted));
+      if (query.blacklisted.toString() === 'true') {
+        const blacklistSubquery = this.db
+          .select({ candidateId: blacklists.candidateId })
+          .from(blacklists);
+
+        filters.push(inArray(candidates.id, blacklistSubquery));
+      } else {
+        const blacklistSubquery = this.db
+          .select({ candidateId: blacklists.candidateId })
+          .from(blacklists);
+        filters.push(not(inArray(candidates.id, blacklistSubquery)));
+      }
     }
     if (query.sourceId) {
       filters.push(eq(candidates.sourceId, query.sourceId));
@@ -395,8 +417,6 @@ export class CandidateService {
 
     if (query.deleted) {
       filters.push(eq(candidates.deleted, query.deleted));
-    } else {
-      filters.push(eq(candidates.deleted, false));
     }
 
     return filters.length > 0 ? and(...filters) : undefined;

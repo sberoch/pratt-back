@@ -5,3 +5,4 @@ export * from './candidatefile.schema';
 export * from './industry.schema';
 export * from './candidatesource.schema';
 export * from './comment.schema';
+export * from './blacklist.schema';

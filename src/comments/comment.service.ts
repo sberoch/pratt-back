@@ -19,6 +19,11 @@ import {
   DeleteCommentDto,
   UpdateCommentDto,
 } from './comment.dto';
+import { Candidate } from '../common/database/schemas/candidate.schema';
+
+export type CommentApiResponse = Comment & {
+  candidate: Candidate;
+};
 
 @Injectable()
 export class CommentService {
@@ -26,7 +31,7 @@ export class CommentService {
 
   async findAll(
     params: CommentQueryParams,
-  ): Promise<PaginatedResponse<Comment>> {
+  ): Promise<PaginatedResponse<CommentApiResponse>> {
     const paginationQuery = buildPaginationQuery(params);
     const whereClause = this.buildWhereClause(params);
     const orderClause = this.buildOrderBy(params);
@@ -36,6 +41,9 @@ export class CommentService {
       orderBy: orderClause,
       limit: paginationQuery.limit,
       offset: paginationQuery.offset,
+      with: {
+        candidate: true,
+      },
     });
 
     const countQuery = this.db

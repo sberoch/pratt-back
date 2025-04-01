@@ -12,6 +12,7 @@ import { IndustryModule } from './industry/industry.module';
 import { CandidateFileModule } from './candidatefile/candidatefile.module';
 import { CandidateSourceModule } from './candidatesource/candidatesource.module';
 import { CommentModule } from './comments/comment.module';
+import { BlacklistModule } from './blacklist/blacklist.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CommentModule } from './comments/comment.module';
     CandidateFileModule,
     CandidateSourceModule,
     CommentModule,
+    BlacklistModule,
   ],
   controllers: [AppController],
 })
