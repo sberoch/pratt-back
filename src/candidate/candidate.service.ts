@@ -408,6 +408,8 @@ export class CandidateService {
 
     if (query.deleted) {
       filters.push(eq(candidates.deleted, query.deleted));
+    } else {
+      filters.push(eq(candidates.deleted, false));
     }
 
     return filters.length > 0 ? and(...filters) : undefined;
