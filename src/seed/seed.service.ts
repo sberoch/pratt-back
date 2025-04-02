@@ -58,12 +58,12 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 92,
+            minValue: 9000,
+            maxValue: 9002,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['IT', 'Ingenieria', 'RRHH'],
+            values: ['Administración', 'Finanzas', 'Recursos Humanos'],
             isUnique: true,
           }),
         },
@@ -73,8 +73,8 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 92,
+            minValue: 9000,
+            maxValue: 9002,
             isUnique: true,
           }),
           name: f.valuesFromArray({
@@ -88,12 +88,12 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 92,
+            minValue: 9000,
+            maxValue: 9002,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Industria 1', 'Industria 2', 'Industria 3'],
+            values: ['Tecnología', 'Banca y Finanzas', 'Consultoría'],
             isUnique: true,
           }),
         },
@@ -103,12 +103,12 @@ export class SeedService {
         count: 4,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 93,
+            minValue: 9000,
+            maxValue: 9003,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Junior', 'Semisenior', 'Senior', 'Lead'],
+            values: ['Manager', 'Director', 'VP', 'C-Level'],
             isUnique: true,
           }),
         },
@@ -118,8 +118,8 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
           name: f.valuesFromArray({
@@ -159,25 +159,26 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
+          name: f.fullName(),
           candidateSourceId: f.int({
-            minValue: 90,
-            maxValue: 92,
+            minValue: 9000,
+            maxValue: 9002,
           }),
           stars: f.number({
             minValue: 1,
             maxValue: 5,
           }),
           dateOfBirth: f.date({
-            minDate: new Date('1980-01-01'),
+            minDate: new Date('1970-01-01'),
             maxDate: new Date('2004-01-01'),
           }),
           address: f.streetAddress(),
           gender: f.valuesFromArray({
-            values: ['Hombre', 'Mujer'],
+            values: ['Masculino', 'Femenino', 'Otro'],
           }),
           image: f.valuesFromArray({
             values: [
@@ -201,16 +202,16 @@ export class SeedService {
           }),
           shortDescription: f.valuesFromArray({
             values: [
-              'Software Engineer @ Google',
-              'Full Stack Developer @ Amazon',
-              'Data Scientist @ Tesla',
-              'Machine Learning Engineer @ NVIDIA',
-              'Game Developer @ Ubisoft',
-              'Cloud Engineer @ Microsoft',
-              'AI Researcher @ OpenAI',
-              'Frontend Engineer @ Meta',
-              'Security Analyst @ IBM',
-              'Embedded Systems Engineer @ Intel',
+              'Office Manager - Fortune 500 Company',
+              'Executive Assistant for Global Corp',
+              'HR Coordinator @ Tech Solutions',
+              'Administrative Assistant in Healthcare Inc',
+              'Operations Lead at Manufacturing Co',
+              'Front Desk Supervisor | Hotel Chain',
+              'Project Coordinator with Consulting Firm',
+              'Office Administrator - Law Firm',
+              'Executive Secretary to Financial Services',
+              'Administrative Manager of Education Center',
             ],
             isUnique: true,
           }),
@@ -241,12 +242,16 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
-          areaId: f.int({ minValue: 90, maxValue: 92 }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
+          areaId: f.int({ minValue: 9000, maxValue: 9002 }),
         },
       },
 
@@ -254,12 +259,16 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
-          industryId: f.int({ minValue: 90, maxValue: 92 }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
+          industryId: f.int({ minValue: 9000, maxValue: 9002 }),
         },
       },
 
@@ -267,12 +276,16 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
-          seniorityId: f.int({ minValue: 90, maxValue: 93 }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
+          seniorityId: f.int({ minValue: 9000, maxValue: 9003 }),
         },
       },
 
@@ -280,12 +293,16 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
-          fileId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
+          fileId: f.int({ minValue: 9000, maxValue: 9009, isUnique: true }),
         },
       },
 
@@ -293,11 +310,15 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 99,
+            minValue: 9000,
+            maxValue: 9009,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
           userId: f.int({ minValue: 1, maxValue: 3 }),
         },
       },
@@ -306,11 +327,15 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 90,
-            maxValue: 92,
+            minValue: 9000,
+            maxValue: 9002,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
           userId: f.int({ minValue: 1, maxValue: 3 }),
         },
       },
