@@ -346,19 +346,11 @@ export class CandidateService {
     if (query.maximumStars) {
       filters.push(lte(candidates.stars, String(query.maximumStars)));
     }
-    if (query.blacklisted) {
-      if (query.blacklisted.toString() === 'true') {
-        const blacklistSubquery = this.db
-          .select({ candidateId: blacklists.candidateId })
-          .from(blacklists);
-
-        filters.push(inArray(candidates.id, blacklistSubquery));
-      } else {
-        const blacklistSubquery = this.db
-          .select({ candidateId: blacklists.candidateId })
-          .from(blacklists);
-        filters.push(not(inArray(candidates.id, blacklistSubquery)));
-      }
+    if (!query.blacklisted || query.blacklisted.toString() === 'false') {
+      const blacklistSubquery = this.db
+        .select({ candidateId: blacklists.candidateId })
+        .from(blacklists);
+      filters.push(not(inArray(candidates.id, blacklistSubquery)));
     }
     if (query.sourceId) {
       filters.push(eq(candidates.sourceId, query.sourceId));
