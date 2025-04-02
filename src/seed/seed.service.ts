@@ -44,9 +44,9 @@ export class SeedService {
       areas,
       candidateSources,
       industries,
+      seniorities,
       candidateFiles,
       candidates,
-      seniorities,
       candidateAreas,
       candidateIndustries,
       candidateSeniorities,
@@ -58,8 +58,8 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 3,
+            minValue: 90,
+            maxValue: 92,
             isUnique: true,
           }),
           name: f.valuesFromArray({
@@ -73,8 +73,8 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 3,
+            minValue: 90,
+            maxValue: 92,
             isUnique: true,
           }),
           name: f.valuesFromArray({
@@ -88,8 +88,8 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 3,
+            minValue: 90,
+            maxValue: 92,
             isUnique: true,
           }),
           name: f.valuesFromArray({
@@ -103,8 +103,8 @@ export class SeedService {
         count: 4,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 4,
+            minValue: 90,
+            maxValue: 93,
             isUnique: true,
           }),
           name: f.valuesFromArray({
@@ -118,8 +118,8 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
         },
@@ -129,13 +129,13 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
           candidateSourceId: f.int({
-            minValue: 1,
-            maxValue: 3,
+            minValue: 90,
+            maxValue: 92,
           }),
           stars: f.number({
             minValue: 1,
@@ -151,7 +151,7 @@ export class SeedService {
           }),
           phone: f.int({
             isUnique: true,
-            minValue: 10000000,
+            minValue: 9900000,
             maxValue: 99999999,
           }),
           shortDescription: f.valuesFromArray({
@@ -169,6 +169,21 @@ export class SeedService {
             ],
             isUnique: true,
           }),
+          linkedin: f.valuesFromArray({
+            values: [
+              'https://www.linkedin.com/in/johndoe',
+              'https://www.linkedin.com/in/janedoe',
+              'https://www.linkedin.com/in/alicedoe',
+              'https://www.linkedin.com/in/bobdoe',
+              'https://www.linkedin.com/in/charliedoe',
+              'https://www.linkedin.com/in/davedoe',
+              'https://www.linkedin.com/in/eve',
+              'https://www.linkedin.com/in/frankdoe',
+              'https://www.linkedin.com/in/gracedoe',
+              'https://www.linkedin.com/in/helen',
+            ],
+            isUnique: true,
+          }),
           documentNumber: f.int({
             isUnique: true,
             minValue: 20000000,
@@ -181,12 +196,12 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 1, maxValue: 10, isUnique: true }),
-          areaId: f.int({ minValue: 1, maxValue: 3 }),
+          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          areaId: f.int({ minValue: 90, maxValue: 92 }),
         },
       },
 
@@ -194,12 +209,12 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 1, maxValue: 10, isUnique: true }),
-          industryId: f.int({ minValue: 1, maxValue: 3 }),
+          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          industryId: f.int({ minValue: 90, maxValue: 92 }),
         },
       },
 
@@ -207,12 +222,12 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 1, maxValue: 10, isUnique: true }),
-          seniorityId: f.int({ minValue: 1, maxValue: 4 }),
+          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          seniorityId: f.int({ minValue: 90, maxValue: 93 }),
         },
       },
 
@@ -220,12 +235,12 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 1, maxValue: 10, isUnique: true }),
-          fileId: f.int({ minValue: 1, maxValue: 10 }),
+          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
+          fileId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
         },
       },
 
@@ -233,11 +248,11 @@ export class SeedService {
         count: 10,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 10,
+            minValue: 90,
+            maxValue: 99,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 1, maxValue: 10, isUnique: true }),
+          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
           userId: f.int({ minValue: 1, maxValue: 3 }),
         },
       },
@@ -246,11 +261,11 @@ export class SeedService {
         count: 3,
         columns: {
           id: f.int({
-            minValue: 1,
-            maxValue: 3,
+            minValue: 90,
+            maxValue: 92,
             isUnique: true,
           }),
-          candidateId: f.int({ minValue: 1, maxValue: 10, isUnique: true }),
+          candidateId: f.int({ minValue: 90, maxValue: 99, isUnique: true }),
           userId: f.int({ minValue: 1, maxValue: 3 }),
         },
       },
