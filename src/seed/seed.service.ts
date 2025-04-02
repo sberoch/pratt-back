@@ -141,6 +141,39 @@ export class SeedService {
             minValue: 1,
             maxValue: 5,
           }),
+          dateOfBirth: f.date({
+            minDate: new Date('1980-01-01'),
+            maxDate: new Date('2004-01-01'),
+          }),
+          address: f.streetAddress(),
+          gender: f.valuesFromArray({
+            values: ['Hombre', 'Mujer'],
+          }),
+          phone: f.int({
+            isUnique: true,
+            minValue: 10000000,
+            maxValue: 99999999,
+          }),
+          shortDescription: f.valuesFromArray({
+            values: [
+              'Software Engineer @ Google',
+              'Full Stack Developer @ Amazon',
+              'Data Scientist @ Tesla',
+              'Machine Learning Engineer @ NVIDIA',
+              'Game Developer @ Ubisoft',
+              'Cloud Engineer @ Microsoft',
+              'AI Researcher @ OpenAI',
+              'Frontend Engineer @ Meta',
+              'Security Analyst @ IBM',
+              'Embedded Systems Engineer @ Intel',
+            ],
+            isUnique: true,
+          }),
+          documentNumber: f.int({
+            isUnique: true,
+            minValue: 20000000,
+            maxValue: 45000000,
+          }),
         },
       },
 
