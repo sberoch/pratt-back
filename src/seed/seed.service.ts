@@ -122,6 +122,36 @@ export class SeedService {
             maxValue: 99,
             isUnique: true,
           }),
+          name: f.valuesFromArray({
+            values: [
+              'CV1.pdf',
+              'CV2.pdf',
+              'CV3.pdf',
+              'CV4.pdf',
+              'CV5.pdf',
+              'CV6.pdf',
+              'CV7.pdf',
+              'CV8.pdf',
+              'CV9.pdf',
+              'CV10.pdf',
+            ],
+            isUnique: true,
+          }),
+          url: f.valuesFromArray({
+            values: [
+              'https://example.com/file1.pdf',
+              'https://example.com/file2.pdf',
+              'https://example.com/file3.pdf',
+              'https://example.com/file4.pdf',
+              'https://example.com/file5.pdf',
+              'https://example.com/file6.pdf',
+              'https://example.com/file7.pdf',
+              'https://example.com/file8.pdf',
+              'https://example.com/file9.pdf',
+              'https://example.com/file10.pdf',
+            ],
+            isUnique: true,
+          }),
         },
       },
 
@@ -148,6 +178,21 @@ export class SeedService {
           address: f.streetAddress(),
           gender: f.valuesFromArray({
             values: ['Hombre', 'Mujer'],
+          }),
+          image: f.valuesFromArray({
+            values: [
+              'https://www.shutterstock.com/image-photo/passport-photo-serious-brazilian-young-600nw-1956224953.jpg',
+              'https://media.v2.siweb.es/uploaded_thumb_big/50539061f56935f748726281f52004db/jurica_koletic_7yvzyzeitc8_unsplash_copia.jpg',
+              'https://lirp.cdn-website.com/46764031/dms3rep/multi/opt/foto-carnet-ejemplo-header-348w.JPG',
+              'https://galiciavisual.es/wp-content/uploads/2023/12/chico-atractivo-camisa-aislado-sobre-fondo-blanco.jpg',
+              'https://as1.ftcdn.net/v2/jpg/01/57/67/88/1000_F_157678844_8bbNSQ5ZiGxFWhCEpLr0mAqm55E5onmm.jpg',
+              'https://i.pinimg.com/474x/b8/91/fb/b891fb0046f2a92b99754d061710c1dc.jpg',
+              'https://st2.depositphotos.com/2783505/7767/i/450/depositphotos_77676472-stock-photo-portrait-of-a-blonde-german.jpg',
+              'https://industrial.unmsm.edu.pe/wp-content/uploads/2015/03/foto-carnet1.jpg',
+              'https://fotomanias.com.ar/wp-content/uploads/2019/03/foto-carnet-fondo-celeste.jpg',
+              'https://t4.ftcdn.net/jpg/00/85/77/75/360_F_85777561_m6EMdjM6Knkz7OLJmN5zr5ZeK359S3G5.jpg',
+            ],
+            isUnique: true,
           }),
           phone: f.int({
             isUnique: true,
