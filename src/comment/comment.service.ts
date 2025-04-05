@@ -20,6 +20,7 @@ import {
   UpdateCommentDto,
 } from './comment.dto';
 import { Candidate } from '../common/database/schemas/candidate.schema';
+import { excludePassword } from '../common/database/schemas/user.schema';
 
 export type CommentApiResponse = Comment & {
   candidate: Candidate;
@@ -43,6 +44,7 @@ export class CommentService {
       offset: paginationQuery.offset,
       with: {
         candidate: true,
+        user: true,
       },
     });
 
@@ -51,10 +53,16 @@ export class CommentService {
       .from(comments)
       .where(whereClause);
 
-    const [items, [{ count: totalItems }]] = await Promise.all([
+    let [items, [{ count: totalItems }]] = await Promise.all([
       itemsQuery,
       countQuery,
     ]);
+
+    items = items.map((comment) => {
+      comment.user = excludePassword(comment.user);
+      return comment;
+    });
+
     return paginatedResponse(items, totalItems, paginationQuery);
   }
 

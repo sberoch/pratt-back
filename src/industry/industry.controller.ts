@@ -7,8 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 import { IndustryService } from './industry.service';
 import {
@@ -16,7 +21,12 @@ import {
   UpdateIndustryDto,
   IndustryQueryParams,
 } from './industry.dto';
+import { RolesGuard } from '../auth/roles/roles.guard';
+import { Roles } from '../auth/roles/roles.decorator';
+import { UserRole } from '../user/user.roles';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiTags('Industries')
 @Controller('industry')
 export class IndustryController {
@@ -34,12 +44,14 @@ export class IndustryController {
     return this.industryService.findOne(+id);
   }
 
+  @Roles(UserRole.ADMIN)
   @ApiCreatedResponse()
   @Post()
   async create(@Body() createIndustryDto: CreateIndustryDto) {
     return this.industryService.create(createIndustryDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @ApiOkResponse()
   @Patch(':id')
   async update(
@@ -49,6 +61,7 @@ export class IndustryController {
     return this.industryService.update(+id, updateIndustryDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @ApiOkResponse()
   @Delete(':id')
   async remove(@Param('id') id: string) {

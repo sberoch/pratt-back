@@ -7,8 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 import { CandidateService } from './candidate.service';
 import {
@@ -16,7 +21,10 @@ import {
   UpdateCandidateDto,
   CandidateQueryParams,
 } from './candidate.dto';
+import { RolesGuard } from '../auth/roles/roles.guard';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiTags('Candidates')
 @Controller('candidate')
 export class CandidateController {

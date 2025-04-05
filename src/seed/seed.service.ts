@@ -16,6 +16,8 @@ import { candidateFiles } from '../common/database/schemas/candidatefile.schema'
 import { industries } from '../common/database/schemas/industry.schema';
 import { areas } from '../common/database/schemas/area.schema';
 import { blacklists } from '../common/database/schemas/blacklist.schema';
+import { hashPassword, users } from '../common/database/schemas/user.schema';
+import { UserRole } from '../user/user.roles';
 
 @Injectable()
 export class SeedService {
@@ -35,11 +37,13 @@ export class SeedService {
       candidateIndustries,
       candidateSeniorities,
       candidateFilesRelation,
+      users,
     });
     return true;
   }
 
   async populateDatabase() {
+    const hashedPassword = await hashPassword('12345678');
     await seed(this.db, {
       areas,
       candidateSources,
@@ -53,6 +57,7 @@ export class SeedService {
       candidateFilesRelation,
       comments,
       blacklists,
+      users,
     }).refine((f) => ({
       areas: {
         count: 3,
@@ -319,7 +324,7 @@ export class SeedService {
             maxValue: 9009,
             isUnique: true,
           }),
-          userId: f.int({ minValue: 1, maxValue: 3 }),
+          userId: f.int({ minValue: 9000, maxValue: 9002 }),
         },
       },
 
@@ -336,7 +341,34 @@ export class SeedService {
             maxValue: 9009,
             isUnique: true,
           }),
-          userId: f.int({ minValue: 1, maxValue: 3 }),
+          userId: f.int({ minValue: 9000, maxValue: 9002 }),
+        },
+      },
+      users: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          active: f.default({ defaultValue: true }),
+          email: f.valuesFromArray({
+            values: ['sberoch@fi.uba.ar', 'admin@admin.com', 'admin@gmail.com'],
+            isUnique: true,
+          }),
+          password: f.valuesFromArray({
+            values: [hashedPassword],
+          }),
+          role: f.valuesFromArray({
+            values: [UserRole.ADMIN],
+          }),
+          createdAt: f.default({
+            defaultValue: new Date(),
+          }),
+          lastLogin: f.default({
+            defaultValue: null,
+          }),
         },
       },
     }));

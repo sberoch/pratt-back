@@ -7,8 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 import { SeniorityService } from './seniority.service';
 import {
@@ -16,7 +21,12 @@ import {
   UpdateSeniorityDto,
   SeniorityQueryParams,
 } from './seniority.dto';
+import { RolesGuard } from '../auth/roles/roles.guard';
+import { Roles } from '../auth/roles/roles.decorator';
+import { UserRole } from '../user/user.roles';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiTags('Seniorities')
 @Controller('seniority')
 export class SeniorityController {
@@ -34,12 +44,14 @@ export class SeniorityController {
     return this.seniorityService.findOne(+id);
   }
 
+  @Roles(UserRole.ADMIN)
   @ApiCreatedResponse()
   @Post()
   async create(@Body() createSeniorityDto: CreateSeniorityDto) {
     return this.seniorityService.create(createSeniorityDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @ApiOkResponse()
   @Patch(':id')
   async update(
@@ -49,6 +61,7 @@ export class SeniorityController {
     return this.seniorityService.update(+id, updateSeniorityDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @ApiOkResponse()
   @Delete(':id')
   async remove(@Param('id') id: string) {

@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import { candidates } from './candidate.schema';
+import { users } from './user.schema';
 
 export const comments = pgTable('comments', {
   id: serial('id').primaryKey(),
@@ -11,13 +12,21 @@ export const comments = pgTable('comments', {
     }),
   comment: text('comment').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  userId: integer('user_id').notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+    }),
 });
 
 export const commentRelations = relations(comments, ({ one }) => ({
   candidate: one(candidates, {
     fields: [comments.candidateId],
     references: [candidates.id],
+  }),
+  user: one(users, {
+    fields: [comments.userId],
+    references: [users.id],
   }),
 }));
 

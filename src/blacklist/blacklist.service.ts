@@ -22,6 +22,7 @@ import {
   UpdateBlacklistDto,
 } from './blacklist.dto';
 import { Candidate } from '../common/database/schemas/candidate.schema';
+import { excludePassword } from '../common/database/schemas/user.schema';
 
 export type BlacklistApiResponse = Blacklist & {
   candidate: Candidate;
@@ -38,13 +39,14 @@ export class BlacklistService {
     const whereClause = this.buildWhereClause(params);
     const orderClause = this.buildOrderBy(params);
 
-    const itemsQuery = this.db.query.blacklists.findMany({
+    let itemsQuery = this.db.query.blacklists.findMany({
       where: whereClause,
       orderBy: orderClause,
       limit: paginationQuery.limit,
       offset: paginationQuery.offset,
       with: {
         candidate: true,
+        user: true,
       },
     });
 
@@ -53,10 +55,16 @@ export class BlacklistService {
       .from(blacklists)
       .where(whereClause);
 
-    const [items, [{ count: totalItems }]] = await Promise.all([
+    let [items, [{ count: totalItems }]] = await Promise.all([
       itemsQuery,
       countQuery,
     ]);
+
+    items = items.map((blacklist) => {
+      blacklist.user = excludePassword(blacklist.user);
+      return blacklist;
+    });
+
     return paginatedResponse(items, totalItems, paginationQuery);
   }
 

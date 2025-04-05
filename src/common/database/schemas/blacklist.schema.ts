@@ -1,6 +1,7 @@
 import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import { candidates } from './candidate.schema';
 import { relations } from 'drizzle-orm';
+import { users } from './user.schema';
 
 export const blacklists = pgTable('blacklists', {
   id: serial('id').primaryKey(),
@@ -11,13 +12,21 @@ export const blacklists = pgTable('blacklists', {
     }),
   reason: text('reason').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  userId: integer('user_id').notNull(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade',
+    }),
 });
 
 export const blacklistRelations = relations(blacklists, ({ one }) => ({
   candidate: one(candidates, {
     fields: [blacklists.candidateId],
     references: [candidates.id],
+  }),
+  user: one(users, {
+    fields: [blacklists.userId],
+    references: [users.id],
   }),
 }));
 

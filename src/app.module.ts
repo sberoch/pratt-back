@@ -14,6 +14,11 @@ import { CandidateSourceModule } from './candidatesource/candidatesource.module'
 import { CommentModule } from './comment/comment.module';
 import { BlacklistModule } from './blacklist/blacklist.module';
 import { SeedModule } from './seed/seed.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt/jwt.guard';
+import { ClsModule } from 'nestjs-cls';
 
 @Module({
   imports: [
@@ -32,8 +37,20 @@ import { SeedModule } from './seed/seed.module';
     CommentModule,
     BlacklistModule,
     SeedModule,
+    UserModule,
+    AuthModule,
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

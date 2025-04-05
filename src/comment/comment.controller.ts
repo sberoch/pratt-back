@@ -7,8 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { ApiTags } from '@nestjs/swagger';
 import { CommentService } from './comment.service';
 import {
@@ -17,7 +22,10 @@ import {
   CommentQueryParams,
   DeleteCommentDto,
 } from './comment.dto';
+import { RolesGuard } from '../auth/roles/roles.guard';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiTags('Comments')
 @Controller('comment')
 export class CommentController {
