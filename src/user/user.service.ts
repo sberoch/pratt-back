@@ -74,10 +74,8 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     createUserDto.password = await hashPassword(createUserDto.password);
-    const [user] = await this.db
-      .insert(users)
-      .values(createUserDto)
-      .returning();
+    let [user] = await this.db.insert(users).values(createUserDto).returning();
+    user = excludePassword(user);
     return user;
   }
 
