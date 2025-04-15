@@ -21,6 +21,7 @@ import { JwtAuthGuard } from './auth/jwt/jwt.guard';
 import { ClsModule } from 'nestjs-cls';
 import { CompanyModule } from './company/company.module';
 import { CandidateVacancyStatusModule } from './candidatevacancystatus/candidatevacancystatus.module';
+import { VacancyStatusModule } from './vacancystatus/vacancystatus.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CandidateVacancyStatusModule } from './candidatevacancystatus/candidate
     BlacklistModule,
     CompanyModule,
     CandidateVacancyStatusModule,
+    VacancyStatusModule,
     SeedModule,
     UserModule,
     AuthModule,

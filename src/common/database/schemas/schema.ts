@@ -9,3 +9,4 @@ export * from './blacklist.schema';
 export * from './user.schema';
 export * from './company.schema';
 export * from './candidatevacancystatus.schema';
+export * from './vacancystatus.schema';

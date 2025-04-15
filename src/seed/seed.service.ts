@@ -20,6 +20,7 @@ import { hashPassword, users } from '../common/database/schemas/user.schema';
 import { UserRole } from '../user/user.roles';
 import { companies } from '../common/database/schemas/company.schema';
 import { candidateVacancyStatuses } from '../common/database/schemas/candidatevacancystatus.schema';
+import { vacancyStatuses } from '../common/database/schemas/vacancystatus.schema';
 
 @Injectable()
 export class SeedService {
@@ -41,6 +42,7 @@ export class SeedService {
       candidateFilesRelation,
       companies,
       candidateVacancyStatuses,
+      vacancyStatuses,
       users,
     });
     return true;
@@ -63,6 +65,7 @@ export class SeedService {
       blacklists,
       companies,
       candidateVacancyStatuses,
+      vacancyStatuses,
       users,
     }).refine((f) => ({
       areas: {
@@ -391,6 +394,21 @@ export class SeedService {
               'Offer',
               'Hired',
             ],
+            isUnique: true,
+          }),
+        },
+      },
+
+      vacancyStatuses: {
+        count: 4,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9003,
+            isUnique: true,
+          }),
+          name: f.valuesFromArray({
+            values: ['Open', 'Cancelled', 'Filled', 'Standby'],
             isUnique: true,
           }),
         },

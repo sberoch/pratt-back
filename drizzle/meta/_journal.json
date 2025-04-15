@@ -106,6 +106,13 @@
       "when": 1744757416922,
       "tag": "0015_worried_caretaker",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1744758506303,
+      "tag": "0016_bright_alex_power",
+      "breakpoints": true
     }
   ]
 }
