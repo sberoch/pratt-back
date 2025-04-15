@@ -7,3 +7,4 @@ export * from './candidatesource.schema';
 export * from './comment.schema';
 export * from './blacklist.schema';
 export * from './user.schema';
+export * from './company.schema';

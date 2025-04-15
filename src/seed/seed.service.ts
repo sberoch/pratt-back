@@ -18,6 +18,7 @@ import { areas } from '../common/database/schemas/area.schema';
 import { blacklists } from '../common/database/schemas/blacklist.schema';
 import { hashPassword, users } from '../common/database/schemas/user.schema';
 import { UserRole } from '../user/user.roles';
+import { companies } from '../common/database/schemas/company.schema';
 
 @Injectable()
 export class SeedService {
@@ -37,6 +38,7 @@ export class SeedService {
       candidateIndustries,
       candidateSeniorities,
       candidateFilesRelation,
+      companies,
       users,
     });
     return true;
@@ -57,6 +59,7 @@ export class SeedService {
       candidateFilesRelation,
       comments,
       blacklists,
+      companies,
       users,
     }).refine((f) => ({
       areas: {
@@ -344,6 +347,30 @@ export class SeedService {
           userId: f.int({ minValue: 9000, maxValue: 9002 }),
         },
       },
+
+      companies: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          name: f.valuesFromArray({
+            values: ['Apple', 'Google', 'Microsoft'],
+            isUnique: true,
+          }),
+          description: f.valuesFromArray({
+            values: [
+              'Apple is an American multinational technology company',
+              'Google is an American multinational technology company',
+              'Microsoft is an American multinational technology company',
+            ],
+            isUnique: true,
+          }),
+        },
+      },
+
       users: {
         count: 3,
         columns: {
