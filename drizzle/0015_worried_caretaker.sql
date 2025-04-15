@@ -1,0 +1,1 @@
+ALTER TABLE "candidateVacancyStatuses" RENAME TO "candidate_vacancy_statuses";

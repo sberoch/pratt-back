@@ -19,6 +19,7 @@ import { blacklists } from '../common/database/schemas/blacklist.schema';
 import { hashPassword, users } from '../common/database/schemas/user.schema';
 import { UserRole } from '../user/user.roles';
 import { companies } from '../common/database/schemas/company.schema';
+import { candidateVacancyStatuses } from '../common/database/schemas/candidatevacancystatus.schema';
 
 @Injectable()
 export class SeedService {
@@ -39,6 +40,7 @@ export class SeedService {
       candidateSeniorities,
       candidateFilesRelation,
       companies,
+      candidateVacancyStatuses,
       users,
     });
     return true;
@@ -60,6 +62,7 @@ export class SeedService {
       comments,
       blacklists,
       companies,
+      candidateVacancyStatuses,
       users,
     }).refine((f) => ({
       areas: {
@@ -362,9 +365,31 @@ export class SeedService {
           }),
           description: f.valuesFromArray({
             values: [
-              'Apple is an American multinational technology company',
-              'Google is an American multinational technology company',
-              'Microsoft is an American multinational technology company',
+              'Empresa multinacional de tecnología',
+              'Empresa que se dedica al desarrollo de software',
+              'Empresa de tecnología y servicios',
+            ],
+            isUnique: true,
+          }),
+        },
+      },
+
+      candidateVacancyStatuses: {
+        count: 6,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9005,
+            isUnique: true,
+          }),
+          name: f.valuesFromArray({
+            values: [
+              'Not a match',
+              'Under review',
+              'Pratt interview',
+              'Client interview',
+              'Offer',
+              'Hired',
             ],
             isUnique: true,
           }),

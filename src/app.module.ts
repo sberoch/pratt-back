@@ -20,6 +20,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt/jwt.guard';
 import { ClsModule } from 'nestjs-cls';
 import { CompanyModule } from './company/company.module';
+import { CandidateVacancyStatusModule } from './candidatevacancystatus/candidatevacancystatus.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CompanyModule } from './company/company.module';
     CommentModule,
     BlacklistModule,
     CompanyModule,
+    CandidateVacancyStatusModule,
     SeedModule,
     UserModule,
     AuthModule,
