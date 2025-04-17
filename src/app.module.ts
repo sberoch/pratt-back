@@ -22,6 +22,7 @@ import { ClsModule } from 'nestjs-cls';
 import { CompanyModule } from './company/company.module';
 import { CandidateVacancyStatusModule } from './candidatevacancystatus/candidatevacancystatus.module';
 import { VacancyStatusModule } from './vacancystatus/vacancystatus.module';
+import { VacancyModule } from './vacancy/vacancy.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { VacancyStatusModule } from './vacancystatus/vacancystatus.module';
     CompanyModule,
     CandidateVacancyStatusModule,
     VacancyStatusModule,
+    VacancyModule,
     SeedModule,
     UserModule,
     AuthModule,

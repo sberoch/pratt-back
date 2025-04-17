@@ -10,3 +10,6 @@ export * from './user.schema';
 export * from './company.schema';
 export * from './candidatevacancystatus.schema';
 export * from './vacancystatus.schema';
+export * from './vacancyfilters.schema';
+export * from './vacancy.schema';
+export * from './candidatevacancy.schema';

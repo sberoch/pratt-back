@@ -21,6 +21,13 @@ import { UserRole } from '../user/user.roles';
 import { companies } from '../common/database/schemas/company.schema';
 import { candidateVacancyStatuses } from '../common/database/schemas/candidatevacancystatus.schema';
 import { vacancyStatuses } from '../common/database/schemas/vacancystatus.schema';
+import {
+  vacancyFilters,
+  vacancyFiltersAreas,
+  vacancyFiltersIndustries,
+  vacancyFiltersSeniorities,
+} from '../common/database/schemas/vacancyfilters.schema';
+import { vacancies } from '../common/database/schemas/vacancy.schema';
 
 @Injectable()
 export class SeedService {
@@ -43,6 +50,11 @@ export class SeedService {
       companies,
       candidateVacancyStatuses,
       vacancyStatuses,
+      vacancyFilters,
+      vacancyFiltersSeniorities,
+      vacancyFiltersAreas,
+      vacancyFiltersIndustries,
+      vacancies,
       users,
     });
     return true;
@@ -66,6 +78,11 @@ export class SeedService {
       companies,
       candidateVacancyStatuses,
       vacancyStatuses,
+      vacancyFilters,
+      vacancyFiltersSeniorities,
+      vacancyFiltersAreas,
+      vacancyFiltersIndustries,
+      vacancies,
       users,
     }).refine((f) => ({
       areas: {
@@ -410,6 +427,121 @@ export class SeedService {
           name: f.valuesFromArray({
             values: ['Open', 'Cancelled', 'Filled', 'Standby'],
             isUnique: true,
+          }),
+        },
+      },
+
+      vacancyFilters: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          minStars: f.number({
+            minValue: 1,
+            maxValue: 5,
+          }),
+          minAge: f.int({
+            minValue: 18,
+            maxValue: 29,
+          }),
+          maxAge: f.int({
+            minValue: 30,
+            maxValue: 65,
+          }),
+          gender: f.valuesFromArray({
+            values: ['Masculino', 'Femenino'],
+          }),
+        },
+      },
+
+      vacancyFiltersSeniorities: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          vacancyFiltersId: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          seniorityId: f.int({ minValue: 9000, maxValue: 9003 }),
+        },
+      },
+
+      vacancyFiltersAreas: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          vacancyFiltersId: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          areaId: f.int({ minValue: 9000, maxValue: 9002 }),
+        },
+      },
+
+      vacancyFiltersIndustries: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          vacancyFiltersId: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          industryId: f.int({ minValue: 9000, maxValue: 9002 }),
+        },
+      },
+
+      vacancies: {
+        count: 3,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+            isUnique: true,
+          }),
+          companyId: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          title: f.valuesFromArray({
+            values: ['Desarrollador Backend', 'Desarrollador Frontend', 'QA'],
+            isUnique: true,
+          }),
+          description: f.valuesFromArray({
+            values: [
+              'Buscamos un desarrollador backend con experiencia en Node.js',
+              'Buscamos un desarrollador frontend con experiencia en React',
+              'Buscamos un QA con experiencia en pruebas automatizadas',
+            ],
+            isUnique: true,
+          }),
+          statusId: f.int({
+            minValue: 9000,
+            maxValue: 9003,
+          }),
+          vacancyFiltersId: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          createdAt: f.default({
+            defaultValue: new Date(),
+          }),
+          updatedAt: f.default({
+            defaultValue: new Date(),
           }),
         },
       },
