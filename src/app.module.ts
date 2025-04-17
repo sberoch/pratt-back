@@ -23,6 +23,7 @@ import { CompanyModule } from './company/company.module';
 import { CandidateVacancyStatusModule } from './candidatevacancystatus/candidatevacancystatus.module';
 import { VacancyStatusModule } from './vacancystatus/vacancystatus.module';
 import { VacancyModule } from './vacancy/vacancy.module';
+import { CandidateVacancyModule } from './candidatevacancy/candidatevacancy.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { VacancyModule } from './vacancy/vacancy.module';
     CandidateVacancyStatusModule,
     VacancyStatusModule,
     VacancyModule,
+    CandidateVacancyModule,
     SeedModule,
     UserModule,
     AuthModule,

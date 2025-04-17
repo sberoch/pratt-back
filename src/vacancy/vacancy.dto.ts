@@ -74,12 +74,7 @@ export class CreateVacancyDto {
   companyId: number;
 }
 
-export class UpdateVacancyDto extends PartialType(CreateVacancyDto) {
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  @IsOptional()
-  id?: number;
-}
+export class UpdateVacancyDto extends PartialType(CreateVacancyDto) {}
 
 export class VacancyQueryParams extends PaginationParams {
   @ApiProperty({ example: 1, required: false })

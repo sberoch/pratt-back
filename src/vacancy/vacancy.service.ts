@@ -182,7 +182,7 @@ export class VacancyService {
           .where(eq(vacancyFilters.id, vacancy.vacancyFiltersId));
       }
 
-      if (updateVacancyDto.filters.seniorityIds?.length) {
+      if (updateVacancyDto.filters?.seniorityIds?.length) {
         await tx
           .delete(vacancyFiltersSeniorities)
           .where(
@@ -199,7 +199,7 @@ export class VacancyService {
         );
       }
 
-      if (updateVacancyDto.filters.areaIds?.length) {
+      if (updateVacancyDto.filters?.areaIds?.length) {
         await tx
           .delete(vacancyFiltersAreas)
           .where(
@@ -213,7 +213,7 @@ export class VacancyService {
         );
       }
 
-      if (updateVacancyDto.filters.industryIds?.length) {
+      if (updateVacancyDto.filters?.industryIds?.length) {
         await tx
           .delete(vacancyFiltersIndustries)
           .where(
@@ -257,7 +257,6 @@ export class VacancyService {
 
   private transformQueryResult(result: VacancyQueryResult): VacancyApiResponse {
     const { status, filters, company, candidates, ...rest } = result;
-    console.log(result);
     return {
       ...rest,
       status: result.status,

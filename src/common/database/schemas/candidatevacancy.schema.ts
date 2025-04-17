@@ -15,7 +15,7 @@ export const candidateVacancies = pgTable('candidate_vacancies', {
   candidateVacancyStatusId: integer('candidate_vacancy_status_id')
     .references(() => candidateVacancyStatuses.id, { onDelete: 'cascade' })
     .notNull(),
-  notes: text('notes').notNull(),
+  notes: text('notes'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

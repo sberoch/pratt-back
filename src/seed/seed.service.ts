@@ -28,6 +28,7 @@ import {
   vacancyFiltersSeniorities,
 } from '../common/database/schemas/vacancyfilters.schema';
 import { vacancies } from '../common/database/schemas/vacancy.schema';
+import { candidateVacancies } from '../common/database/schemas/candidatevacancy.schema';
 
 @Injectable()
 export class SeedService {
@@ -55,6 +56,7 @@ export class SeedService {
       vacancyFiltersAreas,
       vacancyFiltersIndustries,
       vacancies,
+      candidateVacancies,
       users,
     });
     return true;
@@ -83,6 +85,7 @@ export class SeedService {
       vacancyFiltersAreas,
       vacancyFiltersIndustries,
       vacancies,
+      candidateVacancies,
       users,
     }).refine((f) => ({
       areas: {
@@ -542,6 +545,39 @@ export class SeedService {
           }),
           updatedAt: f.default({
             defaultValue: new Date(),
+          }),
+        },
+      },
+
+      candidateVacancies: {
+        count: 10,
+        columns: {
+          id: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
+          candidateId: f.int({
+            minValue: 9000,
+            maxValue: 9009,
+            isUnique: true,
+          }),
+          vacancyId: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          candidateVacancyStatusId: f.int({
+            minValue: 9000,
+            maxValue: 9005,
+          }),
+          notes: f.valuesFromArray({
+            values: [
+              null,
+              'El candidato es muy bueno',
+              'El candidato es regular',
+              'El candidato es malo',
+            ],
+            isUnique: false,
           }),
         },
       },
