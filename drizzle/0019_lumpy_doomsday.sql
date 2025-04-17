@@ -1,0 +1,1 @@
+ALTER TABLE "candidates" ADD COLUMN "is_in_company_via_pratt" boolean;

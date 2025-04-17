@@ -412,6 +412,12 @@ export class CandidateService {
       filters.push(eq(candidates.deleted, false));
     }
 
+    if (query.isInCompanyViaPratt) {
+      filters.push(
+        eq(candidates.isInCompanyViaPratt, query.isInCompanyViaPratt),
+      );
+    }
+
     return filters.length > 0 ? and(...filters) : undefined;
   }
 }

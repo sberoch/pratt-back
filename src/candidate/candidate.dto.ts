@@ -2,6 +2,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { PaginationParams } from '../common/pagination/pagination.params';
 import {
   IsArray,
+  IsBoolean,
   IsBooleanString,
   IsEmail,
   IsInt,
@@ -90,6 +91,10 @@ export class CreateCandidateDto {
   @ApiProperty({ example: 3.4 })
   @IsNumber()
   stars: number;
+
+  @ApiProperty({})
+  @IsBoolean()
+  isInCompanyViaPratt: boolean;
 }
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
@@ -170,4 +175,9 @@ export class CandidateQueryParams extends PaginationParams {
   @IsOptional()
   @IsBooleanString()
   deleted?: boolean;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsBooleanString()
+  isInCompanyViaPratt?: boolean;
 }

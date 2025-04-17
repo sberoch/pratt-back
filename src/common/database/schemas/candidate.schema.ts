@@ -34,6 +34,7 @@ export const candidates = pgTable('candidates', {
     onDelete: 'cascade',
   }),
   stars: numeric('stars'),
+  isInCompanyViaPratt: boolean('is_in_company_via_pratt'),
 });
 
 export const candidatesRelations = relations(candidates, ({ one, many }) => ({
