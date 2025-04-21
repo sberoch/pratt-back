@@ -8,7 +8,7 @@ import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
 import {
   candidateVacancyStatuses,
   CandidateVacancyStatus,
-} from '../common/database/schemas/candidateVacancyStatus.schema';
+} from '../common/database/schemas/candidatevacancystatus.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
