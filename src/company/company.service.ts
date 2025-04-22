@@ -18,6 +18,7 @@ import {
   CompanyQueryParams,
   UpdateCompanyDto,
 } from './company.dto';
+import { vacancies } from '../common/database/schemas/vacancy.schema';
 
 @Injectable()
 export class CompanyService {
@@ -35,6 +36,9 @@ export class CompanyService {
       orderBy: orderClause,
       limit: paginationQuery.limit,
       offset: paginationQuery.offset,
+      with: {
+        vacancies: true,
+      },
     });
 
     const countQuery = this.db
@@ -46,7 +50,10 @@ export class CompanyService {
       itemsQuery,
       countQuery,
     ]);
-    return paginatedResponse(items, totalItems, paginationQuery);
+
+    const parsedItems = items.map(this.transformQueryResult);
+
+    return paginatedResponse(parsedItems, totalItems, paginationQuery);
   }
 
   async findOne(id: number) {
@@ -80,6 +87,14 @@ export class CompanyService {
       .where(eq(companies.id, id))
       .returning();
     return company;
+  }
+
+  private transformQueryResult(result) {
+    const { vacancies, ...rest } = result;
+    return {
+      ...rest,
+      vacancyCount: vacancies.length,
+    };
   }
 
   /**
