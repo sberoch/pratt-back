@@ -95,6 +95,11 @@ export class CreateCandidateDto {
   @ApiProperty({})
   @IsBoolean()
   isInCompanyViaPratt: boolean;
+
+  @ApiProperty({ example: 'Argentina' })
+  @IsString()
+  @IsOptional()
+  country: string;
 }
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
@@ -132,6 +137,9 @@ export class CandidateQueryParams extends PaginationParams {
 
   @ApiProperty({ example: '1512345678', required: false })
   phone?: string;
+
+  @ApiProperty({ required: false })
+  country?: string;
 
   @ApiProperty({ example: 1, required: false })
   sourceId?: number;

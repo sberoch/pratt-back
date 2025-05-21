@@ -269,6 +269,9 @@ export class SeedService {
             minValue: 20000000,
             maxValue: 45000000,
           }),
+          country: f.default({
+            defaultValue: 'Argentina',
+          }),
         },
       },
 

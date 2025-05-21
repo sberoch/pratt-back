@@ -1,0 +1,1 @@
+ALTER TABLE "candidates" ADD COLUMN "country" text DEFAULT 'Argentina' NOT NULL;

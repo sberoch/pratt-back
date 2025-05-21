@@ -340,6 +340,9 @@ export class CandidateService {
     if (query.phone) {
       filters.push(ilike(candidates.phone, `%${query.phone}%`));
     }
+    if (query.country) {
+      filters.push(ilike(candidates.country, `%${query.country}%`));
+    }
     if (query.minimumStars) {
       filters.push(gte(candidates.stars, String(query.minimumStars)));
     }
