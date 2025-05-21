@@ -90,15 +90,34 @@ export class SeedService {
       users,
     }).refine((f) => ({
       areas: {
-        count: 3,
+        count: 18,
         columns: {
           id: f.int({
             minValue: 9000,
-            maxValue: 9002,
+            maxValue: 9017,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Administración', 'Finanzas', 'Recursos Humanos'],
+            values: [
+              'Administración',
+              'Administración y Finanzas',
+              'Comercial',
+              'Compras',
+              'Digital-Ecommerce',
+              'Finanzas',
+              'Legales',
+              'Logística',
+              'Marketing',
+              'Mantenimiento',
+              'Producción - Planta',
+              'Project Management',
+              'RRHH',
+              'RRPP-RRII',
+              'Seguridad',
+              'Sistemas - Tecnología',
+              'Supply Chain',
+              'Sustentabilidad',
+            ],
             isUnique: true,
           }),
         },
@@ -120,30 +139,53 @@ export class SeedService {
       },
 
       industries: {
-        count: 3,
+        count: 16,
         columns: {
           id: f.int({
             minValue: 9000,
-            maxValue: 9002,
+            maxValue: 9015,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Tecnología', 'Banca y Finanzas', 'Consultoría'],
+            values: [
+              'Automotriz',
+              'Agro Negocios',
+              'Banca',
+              'Capital Markets',
+              'Consumo Masivo',
+              'Digital',
+              'Energía',
+              'Hotelería-Turismo',
+              'Industria',
+              'Laboratorio - Farma',
+              'Logistica',
+              'Minería',
+              'Oil & Gas',
+              'ONG',
+              'Publicidad',
+              'Retail - SMK',
+            ],
             isUnique: true,
           }),
         },
       },
 
       seniorities: {
-        count: 4,
+        count: 5,
         columns: {
           id: f.int({
             minValue: 9000,
-            maxValue: 9003,
+            maxValue: 9004,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Manager', 'Director', 'VP', 'C-Level'],
+            values: [
+              'CEO',
+              'Director',
+              'Gerente',
+              'Jefe - Team Lider',
+              'Asistente Ejecutiva',
+            ],
             isUnique: true,
           }),
         },
@@ -289,7 +331,7 @@ export class SeedService {
             maxValue: 9009,
             isUnique: true,
           }),
-          areaId: f.int({ minValue: 9000, maxValue: 9002 }),
+          areaId: f.int({ minValue: 9000, maxValue: 9017 }),
         },
       },
 
@@ -306,7 +348,7 @@ export class SeedService {
             maxValue: 9009,
             isUnique: true,
           }),
-          industryId: f.int({ minValue: 9000, maxValue: 9002 }),
+          industryId: f.int({ minValue: 9000, maxValue: 9015 }),
         },
       },
 
@@ -323,7 +365,7 @@ export class SeedService {
             maxValue: 9009,
             isUnique: true,
           }),
-          seniorityId: f.int({ minValue: 9000, maxValue: 9003 }),
+          seniorityId: f.int({ minValue: 9000, maxValue: 9004 }),
         },
       },
 
@@ -480,7 +522,7 @@ export class SeedService {
             minValue: 9000,
             maxValue: 9002,
           }),
-          seniorityId: f.int({ minValue: 9000, maxValue: 9003 }),
+          seniorityId: f.int({ minValue: 9000, maxValue: 9004 }),
         },
       },
 
@@ -496,7 +538,7 @@ export class SeedService {
             minValue: 9000,
             maxValue: 9002,
           }),
-          areaId: f.int({ minValue: 9000, maxValue: 9002 }),
+          areaId: f.int({ minValue: 9000, maxValue: 9017 }),
         },
       },
 
@@ -512,7 +554,7 @@ export class SeedService {
             minValue: 9000,
             maxValue: 9002,
           }),
-          industryId: f.int({ minValue: 9000, maxValue: 9002 }),
+          industryId: f.int({ minValue: 9000, maxValue: 9015 }),
         },
       },
 
