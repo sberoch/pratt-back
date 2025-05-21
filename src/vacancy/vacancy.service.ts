@@ -81,6 +81,8 @@ export class VacancyService {
         },
         company: true,
         candidates: { with: { candidate: true } },
+        createdBy: true,
+        assignedTo: true,
       },
     });
 
@@ -112,6 +114,8 @@ export class VacancyService {
         },
         company: true,
         candidates: { with: { candidate: true } },
+        createdBy: true,
+        assignedTo: true,
       },
     });
     if (!vacancy) throw new NotFoundException('Vacancy not found');
@@ -469,6 +473,14 @@ export class VacancyService {
           ),
         );
       }
+    }
+
+    if (query.createdBy) {
+      filters.push(eq(vacancies.createdBy, query.createdBy));
+    }
+
+    if (query.assignedTo) {
+      filters.push(eq(vacancies.assignedTo, query.assignedTo));
     }
 
     return filters.length > 0 ? and(...filters) : undefined;

@@ -5,6 +5,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -72,26 +73,46 @@ export class CreateVacancyDto {
   @IsInt()
   @IsNotEmpty()
   companyId: number;
+
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @IsNotEmpty()
+  createdBy: number;
+
+  @ApiProperty({ example: 1 })
+  @IsInt()
+  @IsNotEmpty()
+  assignedTo: number;
 }
 
 export class UpdateVacancyDto extends PartialType(CreateVacancyDto) {}
 
 export class VacancyQueryParams extends PaginationParams {
-  @ApiProperty({ example: 1, required: false })
+  @ApiProperty({ required: false })
   id?: number;
 
-  @ApiProperty({ example: 'Frontend Developer', required: false })
+  @ApiProperty({ required: false })
   title?: string;
 
-  @ApiProperty({ example: 'Se busca desarrollador frontend', required: false })
+  @ApiProperty({ required: false })
   description?: string;
 
-  @ApiProperty({ example: 1, required: false })
+  @ApiProperty({ required: false })
   statusId?: number;
 
   @ApiProperty({ required: false })
   filters?: VacancyFiltersDto;
 
-  @ApiProperty({ example: 1, required: false })
+  @ApiProperty({ required: false })
   companyId?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumberString()
+  createdBy?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumberString()
+  assignedTo?: number;
 }

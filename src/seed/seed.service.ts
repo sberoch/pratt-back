@@ -543,6 +543,14 @@ export class SeedService {
             minValue: 9000,
             maxValue: 9002,
           }),
+          createdBy: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
+          assignedTo: f.int({
+            minValue: 9000,
+            maxValue: 9002,
+          }),
           createdAt: f.default({
             defaultValue: new Date(),
           }),

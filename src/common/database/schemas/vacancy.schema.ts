@@ -11,6 +11,7 @@ import { companies } from './company.schema';
 import { relations } from 'drizzle-orm';
 import { vacancyFilters } from './vacancyfilters.schema';
 import { candidateVacancies } from './candidatevacancy.schema';
+import { users } from './user.schema';
 
 export const vacancies = pgTable('vacancies', {
   id: serial('id').primaryKey(),
@@ -26,6 +27,12 @@ export const vacancies = pgTable('vacancies', {
   companyId: integer('company_id').references(() => companies.id, {
     onDelete: 'cascade',
   }),
+  createdBy: integer('created_by')
+    .notNull()
+    .references(() => users.id),
+  assignedTo: integer('assigned_to')
+    .notNull()
+    .references(() => users.id),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -44,6 +51,14 @@ export const vacanciesRelations = relations(vacancies, ({ one, many }) => ({
     references: [vacancyFilters.id],
   }),
   candidates: many(candidateVacancies),
+  createdBy: one(users, {
+    fields: [vacancies.createdBy],
+    references: [users.id],
+  }),
+  assignedTo: one(users, {
+    fields: [vacancies.assignedTo],
+    references: [users.id],
+  }),
 }));
 
 export type Vacancy = typeof vacancies.$inferSelect;
