@@ -123,6 +123,9 @@ export class CompanyService {
     if (params.description) {
       filters.push(ilike(companies.description, params.description));
     }
+    if (params.status) {
+      filters.push(eq(companies.status, params.status));
+    }
     return filters.length > 0 ? and(...filters) : undefined;
   }
 }

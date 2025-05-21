@@ -29,6 +29,7 @@ import {
 } from '../common/database/schemas/vacancyfilters.schema';
 import { vacancies } from '../common/database/schemas/vacancy.schema';
 import { candidateVacancies } from '../common/database/schemas/candidatevacancy.schema';
+import { CompanyStatus } from '../company/company.status';
 
 @Injectable()
 export class SeedService {
@@ -396,6 +397,10 @@ export class SeedService {
               'Empresa de tecnología y servicios',
             ],
             isUnique: true,
+          }),
+          status: f.valuesFromArray({
+            values: [CompanyStatus.ACTIVO, CompanyStatus.PROSPECTO],
+            isUnique: false,
           }),
         },
       },
