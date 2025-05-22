@@ -19,6 +19,10 @@ export class CreateUserDto {
   @ApiProperty({ example: '12345678' })
   password: string;
 
+  @ApiProperty({ example: 'John' })
+  @IsNotEmpty()
+  name: string;
+
   @ApiProperty({ enum: UserRole })
   @IsOptional()
   @IsNotEmpty()
@@ -37,6 +41,10 @@ export class UserQueryParams extends PaginationParams {
   @ApiProperty({ required: false })
   @IsOptional()
   email?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  name?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()

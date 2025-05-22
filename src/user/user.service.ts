@@ -123,6 +123,9 @@ export class UserService {
     if (params.email) {
       filters.push(ilike(users.email, `%${params.email}%`));
     }
+    if (params.name) {
+      filters.push(ilike(users.name, `%${params.name}%`));
+    }
     if (params.active !== undefined) {
       filters.push(eq(users.active, params.active));
     }

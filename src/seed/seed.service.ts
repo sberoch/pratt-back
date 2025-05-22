@@ -640,6 +640,7 @@ export class SeedService {
             values: ['sberoch@fi.uba.ar', 'admin@admin.com', 'admin@gmail.com'],
             isUnique: true,
           }),
+          name: f.fullName(),
           password: f.valuesFromArray({
             values: [hashedPassword],
           }),

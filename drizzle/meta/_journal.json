@@ -162,6 +162,13 @@
       "when": 1747869247027,
       "tag": "0023_lucky_payback",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1747880161018,
+      "tag": "0024_windy_blob",
+      "breakpoints": true
     }
   ]
 }
