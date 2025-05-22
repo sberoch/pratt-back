@@ -31,8 +31,9 @@ import {
   vacancyFiltersSeniorities,
   VacancyFiltersSeniority,
 } from '../common/database/schemas/vacancyfilters.schema';
+import { User } from '../common/database/schemas/user.schema';
 
-type VacancyQueryResult = Vacancy & {
+type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
   filters: VacancyFilters & {
     areaIds: VacancyFiltersArea[];
@@ -41,9 +42,11 @@ type VacancyQueryResult = Vacancy & {
   };
   company: Company;
   candidates: Array<{ candidate: Candidate }>;
+  createdBy: User;
+  assignedTo: User;
 };
 
-export type VacancyApiResponse = Vacancy & {
+export type VacancyApiResponse = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
   filters: VacancyFilters & {
     areaIds: number[];
@@ -52,6 +55,8 @@ export type VacancyApiResponse = Vacancy & {
   };
   company: Company;
   candidates: Candidate[];
+  createdBy: Omit<User, 'password'>;
+  assignedTo: Omit<User, 'password'>;
 };
 
 @Injectable()
@@ -261,6 +266,9 @@ export class VacancyService {
 
   private transformQueryResult(result: VacancyQueryResult): VacancyApiResponse {
     const { status, filters, company, candidates, ...rest } = result;
+    const { password: _createdByPassword, ...createdBy } = result.createdBy;
+    const { password: _assignedToPassword, ...assignedTo } = result.assignedTo;
+
     return {
       ...rest,
       status: result.status,
@@ -276,6 +284,8 @@ export class VacancyService {
         : null,
       company: result.company,
       candidates: result.candidates.map((c) => c.candidate).filter(Boolean),
+      createdBy: createdBy,
+      assignedTo: assignedTo,
     };
   }
 
