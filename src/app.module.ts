@@ -24,6 +24,7 @@ import { CandidateVacancyStatusModule } from './candidatevacancystatus/candidate
 import { VacancyStatusModule } from './vacancystatus/vacancystatus.module';
 import { VacancyModule } from './vacancy/vacancy.module';
 import { CandidateVacancyModule } from './candidatevacancy/candidatevacancy.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { CandidateVacancyModule } from './candidatevacancy/candidatevacancy.modu
     CandidateVacancyModule,
     SeedModule,
     UserModule,
+    DashboardModule,
     AuthModule,
     ClsModule.forRoot({
       global: true,
