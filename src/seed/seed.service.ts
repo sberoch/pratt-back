@@ -65,6 +65,16 @@ export class SeedService {
 
   async populateDatabase() {
     const hashedPassword = await hashPassword('12345678');
+    const seedData = [
+      { id: 9000, name: 'Not a match', sort: 0, isInitial: false },
+      { id: 9001, name: 'Under review', sort: 1, isInitial: true },
+      { id: 9002, name: 'Pratt interview', sort: 2, isInitial: false },
+      { id: 9003, name: 'Client interview', sort: 3, isInitial: false },
+      { id: 9004, name: 'Offer', sort: 4, isInitial: false },
+      { id: 9005, name: 'Hired', sort: 5, isInitial: false },
+    ];
+
+    await this.db.insert(candidateVacancyStatuses).values(seedData);
     await seed(this.db, {
       areas,
       candidateSources,
@@ -79,7 +89,6 @@ export class SeedService {
       comments,
       blacklists,
       companies,
-      candidateVacancyStatuses,
       vacancyStatuses,
       vacancyFilters,
       vacancyFiltersSeniorities,
@@ -443,28 +452,6 @@ export class SeedService {
           status: f.valuesFromArray({
             values: [CompanyStatus.ACTIVO, CompanyStatus.PROSPECTO],
             isUnique: false,
-          }),
-        },
-      },
-
-      candidateVacancyStatuses: {
-        count: 6,
-        columns: {
-          id: f.int({
-            minValue: 9000,
-            maxValue: 9005,
-            isUnique: true,
-          }),
-          name: f.valuesFromArray({
-            values: [
-              'Not a match',
-              'Under review',
-              'Pratt interview',
-              'Client interview',
-              'Offer',
-              'Hired',
-            ],
-            isUnique: true,
           }),
         },
       },

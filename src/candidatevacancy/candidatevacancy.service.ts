@@ -21,6 +21,8 @@ import {
   CandidateVacancyQueryParams,
   UpdateCandidateVacancyDto,
 } from './candidatevacancy.dto';
+import { candidateVacancyStatuses } from '../common/database/schemas/candidatevacancystatus.schema';
+import { candidates } from '../common/database/schemas/candidate.schema';
 
 @Injectable()
 export class CandidateVacancyService {
@@ -71,23 +73,80 @@ export class CandidateVacancyService {
   }
 
   async create(createCandidateVacancyDto: CreateCandidateVacancyDto) {
-    const [candidateVacancy] = await this.db
-      .insert(candidateVacancies)
-      .values(createCandidateVacancyDto)
-      .returning();
-    return candidateVacancy;
+    return await this.db.transaction(async (tx) => {
+      const status = await tx.query.candidateVacancyStatuses.findFirst({
+        where: eq(
+          candidateVacancyStatuses.id,
+          createCandidateVacancyDto.candidateVacancyStatusId,
+        ),
+      });
+
+      const maxSortStatus = await tx.query.candidateVacancyStatuses.findFirst({
+        orderBy: desc(candidateVacancyStatuses.sort),
+      });
+
+      if (status && maxSortStatus && status.sort === maxSortStatus.sort) {
+        await tx
+          .update(candidates)
+          .set({ isInCompanyViaPratt: true } as any)
+          .where(eq(candidates.id, createCandidateVacancyDto.candidateId));
+      }
+
+      const [candidateVacancy] = await tx
+        .insert(candidateVacancies)
+        .values(createCandidateVacancyDto)
+        .returning();
+
+      return candidateVacancy;
+    });
   }
 
   async update(
     id: number,
     updateCandidateVacancyDto: UpdateCandidateVacancyDto,
   ) {
-    const [candidateVacancy] = await this.db
-      .update(candidateVacancies)
-      .set(updateCandidateVacancyDto)
-      .where(eq(candidateVacancies.id, id))
-      .returning();
-    return candidateVacancy;
+    return await this.db.transaction(async (tx) => {
+      if (updateCandidateVacancyDto.candidateVacancyStatusId) {
+        const status = await tx.query.candidateVacancyStatuses.findFirst({
+          where: eq(
+            candidateVacancyStatuses.id,
+            updateCandidateVacancyDto.candidateVacancyStatusId,
+          ),
+        });
+
+        const maxSortStatus = await tx.query.candidateVacancyStatuses.findFirst(
+          {
+            orderBy: desc(candidateVacancyStatuses.sort),
+          },
+        );
+
+        if (status && maxSortStatus && status.sort === maxSortStatus.sort) {
+          const candidateId =
+            updateCandidateVacancyDto.candidateId ??
+            (
+              await tx.query.candidateVacancies.findFirst({
+                where: eq(candidateVacancies.id, id),
+                columns: { candidateId: true },
+              })
+            )?.candidateId;
+
+          if (candidateId) {
+            await tx
+              .update(candidates)
+              .set({ isInCompanyViaPratt: true } as any)
+              .where(eq(candidates.id, candidateId));
+          }
+        }
+      }
+
+      const [candidateVacancy] = await tx
+        .update(candidateVacancies)
+        .set(updateCandidateVacancyDto)
+        .where(eq(candidateVacancies.id, id))
+        .returning();
+
+      return candidateVacancy;
+    });
   }
 
   async remove(id: number) {

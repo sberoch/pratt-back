@@ -4,7 +4,20 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { and, asc, count, desc, eq, SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  gte,
+  lt,
+  lte,
+  not,
+  sql,
+  SQL,
+} from 'drizzle-orm';
 import {
   candidateVacancyStatuses,
   CandidateVacancyStatus,
@@ -64,31 +77,101 @@ export class CandidateVacancyStatusService {
   async create(
     createCandidateVacancyStatusDto: CreateCandidateVacancyStatusDto,
   ) {
-    const [candidateVacancyStatus] = await this.db
-      .insert(candidateVacancyStatuses)
-      .values(createCandidateVacancyStatusDto)
-      .returning();
-    return candidateVacancyStatus;
+    const sort = createCandidateVacancyStatusDto.sort ?? 0;
+
+    return await this.db.transaction(async (tx) => {
+      await tx
+        .update(candidateVacancyStatuses)
+        .set({ sort: sql`${candidateVacancyStatuses.sort} + 1` })
+        .where(gte(candidateVacancyStatuses.sort, sort));
+
+      if (createCandidateVacancyStatusDto.isInitial === true) {
+        await tx
+          .update(candidateVacancyStatuses)
+          .set({ isInitial: false })
+          .where(eq(candidateVacancyStatuses.isInitial, true));
+      }
+
+      const [candidateVacancyStatus] = await tx
+        .insert(candidateVacancyStatuses)
+        .values({ ...createCandidateVacancyStatusDto, sort })
+        .returning();
+
+      return candidateVacancyStatus;
+    });
   }
 
   async update(
     id: number,
     updateCandidateVacancyStatusDto: UpdateCandidateVacancyStatusDto,
   ) {
-    const [candidateVacancyStatus] = await this.db
-      .update(candidateVacancyStatuses)
-      .set(updateCandidateVacancyStatusDto)
-      .where(eq(candidateVacancyStatuses.id, id))
-      .returning();
-    return candidateVacancyStatus;
+    return await this.db.transaction(async (tx) => {
+      const currentStatus = await this.findOne(id);
+
+      const newSort = updateCandidateVacancyStatusDto.sort;
+
+      if (newSort !== undefined && newSort !== currentStatus.sort) {
+        if (newSort > currentStatus.sort) {
+          await tx
+            .update(candidateVacancyStatuses)
+            .set({ sort: sql`${candidateVacancyStatuses.sort} - 1` })
+            .where(
+              and(
+                gt(candidateVacancyStatuses.sort, currentStatus.sort),
+                lte(candidateVacancyStatuses.sort, newSort),
+              ),
+            );
+        } else if (newSort < currentStatus.sort) {
+          await tx
+            .update(candidateVacancyStatuses)
+            .set({ sort: sql`${candidateVacancyStatuses.sort} + 1` })
+            .where(
+              and(
+                gte(candidateVacancyStatuses.sort, newSort),
+                lt(candidateVacancyStatuses.sort, currentStatus.sort),
+              ),
+            );
+        }
+      }
+
+      if (updateCandidateVacancyStatusDto.isInitial === true) {
+        await tx
+          .update(candidateVacancyStatuses)
+          .set({ isInitial: false })
+          .where(
+            and(
+              not(eq(candidateVacancyStatuses.id, id)),
+              eq(candidateVacancyStatuses.isInitial, true),
+            ),
+          );
+      }
+
+      const [updated] = await tx
+        .update(candidateVacancyStatuses)
+        .set(updateCandidateVacancyStatusDto)
+        .where(eq(candidateVacancyStatuses.id, id))
+        .returning();
+
+      return updated;
+    });
   }
 
   async remove(id: number) {
-    const [candidateVacancyStatus] = await this.db
-      .delete(candidateVacancyStatuses)
-      .where(eq(candidateVacancyStatuses.id, id))
-      .returning();
-    return candidateVacancyStatus;
+    return await this.db.transaction(async (tx) => {
+      const currentStatus = await this.findOne(id);
+
+      await tx
+        .update(candidateVacancyStatuses)
+        .set({ sort: sql`${candidateVacancyStatuses.sort} - 1` })
+        .where(gt(candidateVacancyStatuses.sort, currentStatus.sort));
+
+      const [deleted] = await tx
+        .delete(candidateVacancyStatuses)
+        .where(eq(candidateVacancyStatuses.id, id))
+        .returning();
+
+      return deleted;
+    });
   }
 
   /**
