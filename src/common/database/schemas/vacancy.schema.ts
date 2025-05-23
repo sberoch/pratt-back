@@ -42,15 +42,15 @@ export const vacanciesRelations = relations(vacancies, ({ one, many }) => ({
     fields: [vacancies.statusId],
     references: [vacancyStatuses.id],
   }),
-  company: one(companies, {
-    fields: [vacancies.companyId],
-    references: [companies.id],
-  }),
   filters: one(vacancyFilters, {
     fields: [vacancies.vacancyFiltersId],
     references: [vacancyFilters.id],
   }),
-  candidates: many(candidateVacancies),
+  company: one(companies, {
+    fields: [vacancies.companyId],
+    references: [companies.id],
+  }),
+  candidateVacancies: many(candidateVacancies),
   createdBy: one(users, {
     fields: [vacancies.createdBy],
     references: [users.id],

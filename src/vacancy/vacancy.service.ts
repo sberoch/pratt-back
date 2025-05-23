@@ -32,6 +32,8 @@ import {
   VacancyFiltersSeniority,
 } from '../common/database/schemas/vacancyfilters.schema';
 import { User } from '../common/database/schemas/user.schema';
+import { CandidateVacancyStatus } from '../common/database/schemas/candidatevacancystatus.schema';
+import { CandidateVacancy as CandidateVacancySchema } from '../common/database/schemas/candidatevacancy.schema';
 
 type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
@@ -41,7 +43,12 @@ type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
     seniorityIds: VacancyFiltersSeniority[];
   };
   company: Company;
-  candidates: Array<{ candidate: Candidate }>;
+  candidateVacancies: Array<
+    CandidateVacancySchema & {
+      candidate: Candidate;
+      candidateVacancyStatus: CandidateVacancyStatus;
+    }
+  >;
   createdBy: User;
   assignedTo: User;
 };
@@ -54,7 +61,7 @@ export type VacancyApiResponse = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
     seniorityIds: number[];
   };
   company: Company;
-  candidates: Candidate[];
+  candidates: Array<Candidate & { status: CandidateVacancyStatus }>;
   createdBy: Omit<User, 'password'>;
   assignedTo: Omit<User, 'password'>;
 };
@@ -85,7 +92,12 @@ export class VacancyService {
           },
         },
         company: true,
-        candidates: { with: { candidate: true } },
+        candidateVacancies: {
+          with: {
+            candidate: true,
+            candidateVacancyStatus: true,
+          },
+        },
         createdBy: true,
         assignedTo: true,
       },
@@ -118,7 +130,12 @@ export class VacancyService {
           },
         },
         company: true,
-        candidates: { with: { candidate: true } },
+        candidateVacancies: {
+          with: {
+            candidate: true,
+            candidateVacancyStatus: true,
+          },
+        },
         createdBy: true,
         assignedTo: true,
       },
@@ -265,7 +282,7 @@ export class VacancyService {
    */
 
   private transformQueryResult(result: VacancyQueryResult): VacancyApiResponse {
-    const { status, filters, company, candidates, ...rest } = result;
+    const { status, filters, company, candidateVacancies, ...rest } = result;
     const { password: _createdByPassword, ...createdBy } = result.createdBy;
     const { password: _assignedToPassword, ...assignedTo } = result.assignedTo;
 
@@ -283,7 +300,10 @@ export class VacancyService {
           }
         : null,
       company: result.company,
-      candidates: result.candidates.map((c) => c.candidate).filter(Boolean),
+      candidates: result.candidateVacancies.map((cv) => ({
+        ...cv.candidate,
+        status: cv.candidateVacancyStatus,
+      })),
       createdBy: createdBy,
       assignedTo: assignedTo,
     };
