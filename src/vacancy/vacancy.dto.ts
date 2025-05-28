@@ -8,7 +8,9 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
 class VacancyFiltersDto {
   @ApiProperty({ required: false, type: [Number] })
@@ -101,9 +103,6 @@ export class VacancyQueryParams extends PaginationParams {
   statusId?: number;
 
   @ApiProperty({ required: false })
-  filters?: VacancyFiltersDto;
-
-  @ApiProperty({ required: false })
   companyId?: number;
 
   @ApiProperty({ required: false })
@@ -115,4 +114,45 @@ export class VacancyQueryParams extends PaginationParams {
   @IsOptional()
   @IsNumberString()
   assignedTo?: number;
+
+  @ApiProperty({ required: false, type: [Number] })
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  filterSeniorityIds?: number[];
+
+  @ApiProperty({ required: false, type: [Number] })
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  filterAreaIds?: number[];
+
+  @ApiProperty({ required: false, type: [Number] })
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  filterIndustryIds?: number[];
+
+  @ApiProperty({ required: false, example: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  filterMinStars?: number;
+
+  @ApiProperty({ required: false, example: 'Male' })
+  @IsOptional()
+  @IsString()
+  filterGender?: string;
+
+  @ApiProperty({ required: false, example: 18 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  filterMinAge?: number;
+
+  @ApiProperty({ required: false, example: 30 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  filterMaxAge?: number;
 }

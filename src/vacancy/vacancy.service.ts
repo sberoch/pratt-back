@@ -320,169 +320,144 @@ export class VacancyService {
       filters.push(eq(vacancies.companyId, query.companyId));
     }
 
-    if (query.filters) {
-      if (query.filters.gender) {
-        const genderSubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFilters)
-          .innerJoin(
-            vacancies,
-            eq(vacancies.vacancyFiltersId, vacancyFilters.id),
-          )
-          .where(ilike(vacancyFilters.gender, query.filters.gender))
-          .as('gender_subquery');
+    if (query.filterGender) {
+      const genderSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(ilike(vacancyFilters.gender, query.filterGender))
+        .as('gender_subquery');
 
-        filters.push(
-          inArray(
-            vacancies.id,
-            this.db
-              .select({ id: genderSubquery.vacancyId })
-              .from(genderSubquery),
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db.select({ id: genderSubquery.vacancyId }).from(genderSubquery),
+        ),
+      );
+    }
+
+    if (query.filterMinAge) {
+      const minAgeSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(eq(vacancyFilters.minAge, query.filterMinAge))
+        .as('min_age_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db.select({ id: minAgeSubquery.vacancyId }).from(minAgeSubquery),
+        ),
+      );
+    }
+
+    if (query.filterMaxAge) {
+      const maxAgeSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(eq(vacancyFilters.maxAge, query.filterMaxAge))
+        .as('max_age_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db.select({ id: maxAgeSubquery.vacancyId }).from(maxAgeSubquery),
+        ),
+      );
+    }
+
+    if (query.filterMinStars) {
+      const minStarsSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(eq(vacancyFilters.minStars, String(query.filterMinStars)))
+        .as('min_stars_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db
+            .select({ id: minStarsSubquery.vacancyId })
+            .from(minStarsSubquery),
+        ),
+      );
+    }
+
+    if (query.filterAreaIds?.length) {
+      const areaSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFiltersAreas)
+        .innerJoin(
+          vacancies,
+          eq(vacancies.vacancyFiltersId, vacancyFiltersAreas.vacancyFiltersId),
+        )
+        .where(inArray(vacancyFiltersAreas.areaId, query.filterAreaIds))
+        .as('area_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db.select({ id: areaSubquery.vacancyId }).from(areaSubquery),
+        ),
+      );
+    }
+
+    if (query.filterIndustryIds?.length) {
+      const industrySubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFiltersIndustries)
+        .innerJoin(
+          vacancies,
+          eq(
+            vacancies.vacancyFiltersId,
+            vacancyFiltersIndustries.vacancyFiltersId,
           ),
-        );
-      }
+        )
+        .where(
+          inArray(vacancyFiltersIndustries.industryId, query.filterIndustryIds),
+        )
+        .as('industry_subquery');
 
-      if (query.filters.minAge) {
-        const minAgeSubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFilters)
-          .innerJoin(
-            vacancies,
-            eq(vacancies.vacancyFiltersId, vacancyFilters.id),
-          )
-          .where(eq(vacancyFilters.minAge, query.filters.minAge))
-          .as('min_age_subquery');
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db
+            .select({ id: industrySubquery.vacancyId })
+            .from(industrySubquery),
+        ),
+      );
+    }
 
-        filters.push(
-          inArray(
-            vacancies.id,
-            this.db
-              .select({ id: minAgeSubquery.vacancyId })
-              .from(minAgeSubquery),
+    if (query.filterSeniorityIds?.length) {
+      const senioritySubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFiltersSeniorities)
+        .innerJoin(
+          vacancies,
+          eq(
+            vacancies.vacancyFiltersId,
+            vacancyFiltersSeniorities.vacancyFiltersId,
           ),
-        );
-      }
-
-      if (query.filters.maxAge) {
-        const maxAgeSubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFilters)
-          .innerJoin(
-            vacancies,
-            eq(vacancies.vacancyFiltersId, vacancyFilters.id),
-          )
-          .where(eq(vacancyFilters.maxAge, query.filters.maxAge))
-          .as('max_age_subquery');
-
-        filters.push(
+        )
+        .where(
           inArray(
-            vacancies.id,
-            this.db
-              .select({ id: maxAgeSubquery.vacancyId })
-              .from(maxAgeSubquery),
+            vacancyFiltersSeniorities.seniorityId,
+            query.filterSeniorityIds,
           ),
-        );
-      }
+        )
+        .as('seniority_subquery');
 
-      if (query.filters.minStars) {
-        const minStarsSubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFilters)
-          .innerJoin(
-            vacancies,
-            eq(vacancies.vacancyFiltersId, vacancyFilters.id),
-          )
-          .where(eq(vacancyFilters.minStars, String(query.filters.minStars)))
-          .as('min_stars_subquery');
-
-        filters.push(
-          inArray(
-            vacancies.id,
-            this.db
-              .select({ id: minStarsSubquery.vacancyId })
-              .from(minStarsSubquery),
-          ),
-        );
-      }
-
-      if (query.filters.areaIds?.length) {
-        const areaSubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFiltersAreas)
-          .innerJoin(
-            vacancies,
-            eq(
-              vacancies.vacancyFiltersId,
-              vacancyFiltersAreas.vacancyFiltersId,
-            ),
-          )
-          .where(inArray(vacancyFiltersAreas.areaId, query.filters.areaIds))
-          .as('area_subquery');
-
-        filters.push(
-          inArray(
-            vacancies.id,
-            this.db.select({ id: areaSubquery.vacancyId }).from(areaSubquery),
-          ),
-        );
-      }
-
-      if (query.filters.industryIds?.length) {
-        const industrySubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFiltersIndustries)
-          .innerJoin(
-            vacancies,
-            eq(
-              vacancies.vacancyFiltersId,
-              vacancyFiltersIndustries.vacancyFiltersId,
-            ),
-          )
-          .where(
-            inArray(
-              vacancyFiltersIndustries.industryId,
-              query.filters.industryIds,
-            ),
-          )
-          .as('industry_subquery');
-
-        filters.push(
-          inArray(
-            vacancies.id,
-            this.db
-              .select({ id: industrySubquery.vacancyId })
-              .from(industrySubquery),
-          ),
-        );
-      }
-      if (query.filters.seniorityIds?.length) {
-        const senioritySubquery = this.db
-          .select({ vacancyId: vacancies.id })
-          .from(vacancyFiltersSeniorities)
-          .innerJoin(
-            vacancies,
-            eq(
-              vacancies.vacancyFiltersId,
-              vacancyFiltersSeniorities.vacancyFiltersId,
-            ),
-          )
-          .where(
-            inArray(
-              vacancyFiltersSeniorities.seniorityId,
-              query.filters.seniorityIds,
-            ),
-          )
-          .as('seniority_subquery');
-
-        filters.push(
-          inArray(
-            vacancies.id,
-            this.db
-              .select({ id: senioritySubquery.vacancyId })
-              .from(senioritySubquery),
-          ),
-        );
-      }
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db
+            .select({ id: senioritySubquery.vacancyId })
+            .from(senioritySubquery),
+        ),
+      );
     }
 
     if (query.createdBy) {
