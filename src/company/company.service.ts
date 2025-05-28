@@ -5,8 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
-import { companies, Company } from '../common/database/schemas/company.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
+import { companies, Company } from '../common/database/schemas/company.schema';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
 import { PaginatedResponse } from '../common/pagination/pagination.params';
 import {
@@ -14,11 +14,10 @@ import {
   paginatedResponse,
 } from '../common/pagination/pagination.utils';
 import {
-  CreateCompanyDto,
   CompanyQueryParams,
+  CreateCompanyDto,
   UpdateCompanyDto,
 } from './company.dto';
-import { vacancies } from '../common/database/schemas/vacancy.schema';
 
 @Injectable()
 export class CompanyService {
