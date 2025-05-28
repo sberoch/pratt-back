@@ -234,7 +234,7 @@ export class SeedService {
               'https://example.com/file7.pdf',
               'https://example.com/file8.pdf',
               'https://example.com/file9.pdf',
-              'https://example.com/file10.pdf',
+              'https://example.com/fimockVacancyStatusesle10.pdf',
             ],
             isUnique: true,
           }),
@@ -479,7 +479,7 @@ export class SeedService {
             maxValue: 9002,
             isUnique: true,
           }),
-          minStars: f.number({
+          minStars: f.int({
             minValue: 1,
             maxValue: 5,
           }),

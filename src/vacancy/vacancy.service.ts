@@ -4,7 +4,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, inArray, SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  ColumnAliasProxyHandler,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  SQL,
+} from 'drizzle-orm';
 import { Vacancy, vacancies } from '../common/database/schemas/vacancy.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
@@ -34,13 +44,16 @@ import {
 import { User } from '../common/database/schemas/user.schema';
 import { CandidateVacancyStatus } from '../common/database/schemas/candidatevacancystatus.schema';
 import { CandidateVacancy as CandidateVacancySchema } from '../common/database/schemas/candidatevacancy.schema';
+import { Area } from 'src/common/database/schemas/area.schema';
+import { Seniority } from 'src/common/database/schemas/seniority.schema';
+import { Industry } from 'src/common/database/schemas/industry.schema';
 
 type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
   filters: VacancyFilters & {
-    areaIds: VacancyFiltersArea[];
-    industryIds: VacancyFiltersIndustry[];
-    seniorityIds: VacancyFiltersSeniority[];
+    areaIds: Array<VacancyFiltersArea & { area: Area }>;
+    industryIds: Array<VacancyFiltersIndustry & { industry: Industry }>;
+    seniorityIds: Array<VacancyFiltersSeniority & { seniority: Seniority }>;
   };
   company: Company;
   candidateVacancies: Array<
@@ -55,13 +68,20 @@ type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
 
 export type VacancyApiResponse = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
-  filters: VacancyFilters & {
-    areaIds: number[];
-    industryIds: number[];
-    seniorityIds: number[];
-  };
+  filters:
+    | (VacancyFilters & {
+        areas: Area[];
+        industries: Industry[];
+        seniorities: Seniority[];
+      })
+    | null;
   company: Company;
-  candidates: Array<Candidate & { status: CandidateVacancyStatus }>;
+  candidates: Array<
+    CandidateVacancySchema & {
+      candidate: Candidate;
+      status: CandidateVacancyStatus;
+    }
+  >;
   createdBy: Omit<User, 'password'>;
   assignedTo: Omit<User, 'password'>;
 };
@@ -86,9 +106,21 @@ export class VacancyService {
         status: true,
         filters: {
           with: {
-            areaIds: true,
-            industryIds: true,
-            seniorityIds: true,
+            areaIds: {
+              with: {
+                area: true,
+              },
+            },
+            industryIds: {
+              with: {
+                industry: true,
+              },
+            },
+            seniorityIds: {
+              with: {
+                seniority: true,
+              },
+            },
           },
         },
         company: true,
@@ -124,9 +156,21 @@ export class VacancyService {
         status: true,
         filters: {
           with: {
-            areaIds: true,
-            industryIds: true,
-            seniorityIds: true,
+            areaIds: {
+              with: {
+                area: true,
+              },
+            },
+            industryIds: {
+              with: {
+                industry: true,
+              },
+            },
+            seniorityIds: {
+              with: {
+                seniority: true,
+              },
+            },
           },
         },
         company: true,
@@ -292,18 +336,21 @@ export class VacancyService {
       filters: filters
         ? {
             ...result.filters,
-            areaIds: result.filters?.areaIds?.map((a) => a.areaId) || [],
-            industryIds:
-              result.filters?.industryIds?.map((i) => i.industryId) || [],
-            seniorityIds:
-              result.filters?.seniorityIds?.map((s) => s.seniorityId) || [],
+            areas: result.filters?.areaIds?.map((a) => a.area) || [],
+            industries:
+              result.filters?.industryIds?.map((i) => i.industry) || [],
+            seniorities:
+              result.filters?.seniorityIds?.map((s) => s.seniority) || [],
           }
         : null,
       company: result.company,
-      candidates: result.candidateVacancies.map((cv) => ({
-        ...cv.candidate,
-        status: cv.candidateVacancyStatus,
-      })),
+      candidates: result.candidateVacancies.map((cv) => {
+        const { candidateVacancyStatus, ...rest } = cv;
+        return {
+          ...rest,
+          status: candidateVacancyStatus,
+        };
+      }),
       createdBy: createdBy,
       assignedTo: assignedTo,
     };
