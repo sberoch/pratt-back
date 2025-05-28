@@ -4,7 +4,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, inArray, SQL } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  ColumnAliasProxyHandler,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  SQL,
+} from 'drizzle-orm';
 import { Vacancy, vacancies } from '../common/database/schemas/vacancy.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
 import { DrizzleDatabase } from '../common/database/types/drizzle';
@@ -32,29 +42,46 @@ import {
   VacancyFiltersSeniority,
 } from '../common/database/schemas/vacancyfilters.schema';
 import { User } from '../common/database/schemas/user.schema';
+import { CandidateVacancyStatus } from '../common/database/schemas/candidatevacancystatus.schema';
+import { CandidateVacancy as CandidateVacancySchema } from '../common/database/schemas/candidatevacancy.schema';
+import { Area } from 'src/common/database/schemas/area.schema';
+import { Seniority } from 'src/common/database/schemas/seniority.schema';
+import { Industry } from 'src/common/database/schemas/industry.schema';
 
 type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
   filters: VacancyFilters & {
-    areaIds: VacancyFiltersArea[];
-    industryIds: VacancyFiltersIndustry[];
-    seniorityIds: VacancyFiltersSeniority[];
+    areaIds: Array<VacancyFiltersArea & { area: Area }>;
+    industryIds: Array<VacancyFiltersIndustry & { industry: Industry }>;
+    seniorityIds: Array<VacancyFiltersSeniority & { seniority: Seniority }>;
   };
   company: Company;
-  candidates: Array<{ candidate: Candidate }>;
+  candidateVacancies: Array<
+    CandidateVacancySchema & {
+      candidate: Candidate;
+      candidateVacancyStatus: CandidateVacancyStatus;
+    }
+  >;
   createdBy: User;
   assignedTo: User;
 };
 
 export type VacancyApiResponse = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
-  filters: VacancyFilters & {
-    areaIds: number[];
-    industryIds: number[];
-    seniorityIds: number[];
-  };
+  filters:
+    | (VacancyFilters & {
+        areas: Area[];
+        industries: Industry[];
+        seniorities: Seniority[];
+      })
+    | null;
   company: Company;
-  candidates: Candidate[];
+  candidates: Array<
+    CandidateVacancySchema & {
+      candidate: Candidate;
+      status: CandidateVacancyStatus;
+    }
+  >;
   createdBy: Omit<User, 'password'>;
   assignedTo: Omit<User, 'password'>;
 };
@@ -79,13 +106,30 @@ export class VacancyService {
         status: true,
         filters: {
           with: {
-            areaIds: true,
-            industryIds: true,
-            seniorityIds: true,
+            areaIds: {
+              with: {
+                area: true,
+              },
+            },
+            industryIds: {
+              with: {
+                industry: true,
+              },
+            },
+            seniorityIds: {
+              with: {
+                seniority: true,
+              },
+            },
           },
         },
         company: true,
-        candidates: { with: { candidate: true } },
+        candidateVacancies: {
+          with: {
+            candidate: true,
+            candidateVacancyStatus: true,
+          },
+        },
         createdBy: true,
         assignedTo: true,
       },
@@ -112,13 +156,30 @@ export class VacancyService {
         status: true,
         filters: {
           with: {
-            areaIds: true,
-            industryIds: true,
-            seniorityIds: true,
+            areaIds: {
+              with: {
+                area: true,
+              },
+            },
+            industryIds: {
+              with: {
+                industry: true,
+              },
+            },
+            seniorityIds: {
+              with: {
+                seniority: true,
+              },
+            },
           },
         },
         company: true,
-        candidates: { with: { candidate: true } },
+        candidateVacancies: {
+          with: {
+            candidate: true,
+            candidateVacancyStatus: true,
+          },
+        },
         createdBy: true,
         assignedTo: true,
       },
@@ -265,7 +326,7 @@ export class VacancyService {
    */
 
   private transformQueryResult(result: VacancyQueryResult): VacancyApiResponse {
-    const { status, filters, company, candidates, ...rest } = result;
+    const { status, filters, company, candidateVacancies, ...rest } = result;
     const { password: _createdByPassword, ...createdBy } = result.createdBy;
     const { password: _assignedToPassword, ...assignedTo } = result.assignedTo;
 
@@ -275,15 +336,21 @@ export class VacancyService {
       filters: filters
         ? {
             ...result.filters,
-            areaIds: result.filters?.areaIds?.map((a) => a.areaId) || [],
-            industryIds:
-              result.filters?.industryIds?.map((i) => i.industryId) || [],
-            seniorityIds:
-              result.filters?.seniorityIds?.map((s) => s.seniorityId) || [],
+            areas: result.filters?.areaIds?.map((a) => a.area) || [],
+            industries:
+              result.filters?.industryIds?.map((i) => i.industry) || [],
+            seniorities:
+              result.filters?.seniorityIds?.map((s) => s.seniority) || [],
           }
         : null,
       company: result.company,
-      candidates: result.candidates.map((c) => c.candidate).filter(Boolean),
+      candidates: result.candidateVacancies.map((cv) => {
+        const { candidateVacancyStatus, ...rest } = cv;
+        return {
+          ...rest,
+          status: candidateVacancyStatus,
+        };
+      }),
       createdBy: createdBy,
       assignedTo: assignedTo,
     };
