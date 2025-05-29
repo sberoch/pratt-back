@@ -252,7 +252,10 @@ export class VacancyService {
           .where(eq(vacancyFilters.id, vacancy.vacancyFiltersId));
       }
 
-      if (updateVacancyDto.filters?.seniorityIds?.length) {
+      if (
+        updateVacancyDto.filters?.seniorityIds?.length ||
+        updateVacancyDto.filters?.seniorityIds === null
+      ) {
         await tx
           .delete(vacancyFiltersSeniorities)
           .where(
@@ -261,29 +264,39 @@ export class VacancyService {
               vacancy.vacancyFiltersId,
             ),
           );
-        await tx.insert(vacancyFiltersSeniorities).values(
-          updateVacancyDto.filters.seniorityIds.map((seniorityId) => ({
-            vacancyFiltersId: vacancy.vacancyFiltersId,
-            seniorityId,
-          })),
-        );
+        if (updateVacancyDto.filters?.seniorityIds?.length) {
+          await tx.insert(vacancyFiltersSeniorities).values(
+            updateVacancyDto.filters.seniorityIds.map((seniorityId) => ({
+              vacancyFiltersId: vacancy.vacancyFiltersId,
+              seniorityId,
+            })),
+          );
+        }
       }
 
-      if (updateVacancyDto.filters?.areaIds?.length) {
+      if (
+        updateVacancyDto.filters?.areaIds?.length ||
+        updateVacancyDto.filters?.areaIds === null
+      ) {
         await tx
           .delete(vacancyFiltersAreas)
           .where(
             eq(vacancyFiltersAreas.vacancyFiltersId, vacancy.vacancyFiltersId),
           );
-        await tx.insert(vacancyFiltersAreas).values(
-          updateVacancyDto.filters.areaIds.map((areaId) => ({
-            vacancyFiltersId: vacancy.vacancyFiltersId,
-            areaId,
-          })),
-        );
+        if (updateVacancyDto.filters?.areaIds?.length) {
+          await tx.insert(vacancyFiltersAreas).values(
+            updateVacancyDto.filters.areaIds.map((areaId) => ({
+              vacancyFiltersId: vacancy.vacancyFiltersId,
+              areaId,
+            })),
+          );
+        }
       }
 
-      if (updateVacancyDto.filters?.industryIds?.length) {
+      if (
+        updateVacancyDto.filters?.industryIds?.length ||
+        updateVacancyDto.filters?.industryIds === null
+      ) {
         await tx
           .delete(vacancyFiltersIndustries)
           .where(
@@ -292,12 +305,14 @@ export class VacancyService {
               vacancy.vacancyFiltersId,
             ),
           );
-        await tx.insert(vacancyFiltersIndustries).values(
-          updateVacancyDto.filters.industryIds.map((industryId) => ({
-            vacancyFiltersId: vacancy.vacancyFiltersId,
-            industryId,
-          })),
-        );
+        if (updateVacancyDto.filters?.industryIds?.length) {
+          await tx.insert(vacancyFiltersIndustries).values(
+            updateVacancyDto.filters.industryIds.map((industryId) => ({
+              vacancyFiltersId: vacancy.vacancyFiltersId,
+              industryId,
+            })),
+          );
+        }
       }
 
       return vacancy;
