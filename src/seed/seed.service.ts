@@ -66,12 +66,13 @@ export class SeedService {
   async populateDatabase() {
     const hashedPassword = await hashPassword('12345678');
     const seedData = [
-      { id: 9000, name: 'Not a match', sort: 0, isInitial: false },
-      { id: 9001, name: 'Under review', sort: 1, isInitial: true },
-      { id: 9002, name: 'Pratt interview', sort: 2, isInitial: false },
-      { id: 9003, name: 'Client interview', sort: 3, isInitial: false },
-      { id: 9004, name: 'Offer', sort: 4, isInitial: false },
-      { id: 9005, name: 'Hired', sort: 5, isInitial: false },
+      { id: 9000, name: 'No es el perfil', sort: 0, isInitial: false },
+      { id: 9001, name: 'En revisión', sort: 1, isInitial: true },
+      { id: 9002, name: 'Entrevista Pratt', sort: 2, isInitial: false },
+      { id: 9003, name: 'Entrevista cliente 1', sort: 3, isInitial: false },
+      { id: 9004, name: 'Entrevista cliente 2', sort: 4, isInitial: false },
+      { id: 9005, name: 'Oferta', sort: 5, isInitial: false },
+      { id: 9006, name: 'Contratado', sort: 6, isInitial: false },
     ];
 
     await this.db.insert(candidateVacancyStatuses).values(seedData);
@@ -141,7 +142,7 @@ export class SeedService {
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['LinkedIn', 'Twitter', 'Facebook'],
+            values: ['LinkedIn', 'Interna', 'Referencia'],
             isUnique: true,
           }),
         },
@@ -234,7 +235,7 @@ export class SeedService {
               'https://example.com/file7.pdf',
               'https://example.com/file8.pdf',
               'https://example.com/file9.pdf',
-              'https://example.com/fimockVacancyStatusesle10.pdf',
+              'https://example.com/file10.pdf',
             ],
             isUnique: true,
           }),
@@ -254,7 +255,7 @@ export class SeedService {
             minValue: 9000,
             maxValue: 9002,
           }),
-          stars: f.number({
+          stars: f.int({
             minValue: 1,
             maxValue: 5,
           }),
@@ -264,7 +265,7 @@ export class SeedService {
           }),
           address: f.streetAddress(),
           gender: f.valuesFromArray({
-            values: ['Masculino', 'Femenino', 'Otro'],
+            values: ['Masculino', 'Femenino'],
           }),
           image: f.valuesFromArray({
             values: [
@@ -323,6 +324,9 @@ export class SeedService {
           }),
           country: f.default({
             defaultValue: 'Argentina',
+          }),
+          deleted: f.default({
+            defaultValue: false,
           }),
         },
       },
@@ -413,11 +417,11 @@ export class SeedService {
       },
 
       blacklists: {
-        count: 3,
+        count: 2,
         columns: {
           id: f.int({
             minValue: 9000,
-            maxValue: 9002,
+            maxValue: 9001,
             isUnique: true,
           }),
           candidateId: f.int({
@@ -425,27 +429,41 @@ export class SeedService {
             maxValue: 9009,
             isUnique: true,
           }),
-          userId: f.int({ minValue: 9000, maxValue: 9002 }),
+          userId: f.int({ minValue: 9000, maxValue: 9001 }),
+          reason: f.valuesFromArray({
+            values: ['No cumple con los requisitos', 'Miente en el curriculum'],
+            isUnique: false,
+          }),
         },
       },
 
       companies: {
-        count: 3,
+        count: 6,
         columns: {
           id: f.int({
             minValue: 9000,
-            maxValue: 9002,
+            maxValue: 9005,
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Apple', 'Google', 'Microsoft'],
+            values: [
+              'Volkswagen Argentina',
+              'Salentein',
+              'Corven',
+              'Hospital Británico',
+              'Laboratorios Elea',
+              'Hospital Italiano',
+            ],
             isUnique: true,
           }),
           description: f.valuesFromArray({
             values: [
-              'Empresa multinacional de tecnología',
-              'Empresa que se dedica al desarrollo de software',
-              'Empresa de tecnología y servicios',
+              'Empresa de automotores',
+              'Empresa de construcción',
+              'Empresa de servicios',
+              'Empresa de salud',
+              'Empresa de laboratorios',
+              'Empresa de hospitales',
             ],
             isUnique: true,
           }),
@@ -465,7 +483,7 @@ export class SeedService {
             isUnique: true,
           }),
           name: f.valuesFromArray({
-            values: ['Open', 'Cancelled', 'Filled', 'Standby'],
+            values: ['Abierta', 'Cancelada', 'Cubierta', 'Standby'],
             isUnique: true,
           }),
         },
@@ -546,26 +564,54 @@ export class SeedService {
       },
 
       vacancies: {
-        count: 3,
+        count: 15,
         columns: {
           id: f.int({
             minValue: 9000,
-            maxValue: 9002,
+            maxValue: 9014,
             isUnique: true,
           }),
           companyId: f.int({
             minValue: 9000,
-            maxValue: 9002,
+            maxValue: 9005,
           }),
           title: f.valuesFromArray({
-            values: ['Desarrollador Backend', 'Desarrollador Frontend', 'QA'],
+            values: [
+              'Director de Administración y Finanzas',
+              'Gerente Comercial',
+              'Jefe de Compras',
+              'Director de Digital y Ecommerce',
+              'Gerente de Finanzas',
+              'Jefe de Legales',
+              'Gerente de Logística',
+              'Director de Marketing',
+              'Jefe de Mantenimiento',
+              'Gerente de Producción',
+              'Director de Project Management',
+              'Gerente de RRHH',
+              'Jefe de Relaciones Públicas',
+              'Director de Sistemas y Tecnología',
+              'Asistente Ejecutiva CEO',
+            ],
             isUnique: true,
           }),
           description: f.valuesFromArray({
             values: [
-              'Buscamos un desarrollador backend con experiencia en Node.js',
-              'Buscamos un desarrollador frontend con experiencia en React',
-              'Buscamos un QA con experiencia en pruebas automatizadas',
+              'Buscamos Director de Administración y Finanzas con sólida experiencia en gestión financiera y administrativa para liderar equipos multidisciplinarios.',
+              'Gerente Comercial con experiencia en desarrollo de estrategias de ventas y gestión de equipos comerciales de alto rendimiento.',
+              'Jefe de Compras con expertise en negociación con proveedores, gestión de inventarios y optimización de costos de adquisición.',
+              'Director de Digital y Ecommerce para liderar la transformación digital y estrategias de comercio electrónico de la compañía.',
+              'Gerente de Finanzas especializado en análisis financiero, presupuestación y control de gestión con enfoque en rentabilidad.',
+              'Jefe de Legales con experiencia en derecho corporativo, contratos comerciales y cumplimiento normativo en entorno empresarial.',
+              'Gerente de Logística para optimizar cadena de suministro, distribución y operaciones logísticas a nivel nacional.',
+              'Director de Marketing con visión estratégica para desarrollar campañas integrales y posicionamiento de marca en mercados competitivos.',
+              'Jefe de Mantenimiento industrial con experiencia en gestión de activos, mantenimiento preventivo y optimización de procesos.',
+              'Gerente de Producción con expertise en manufactura lean, control de calidad y gestión de operaciones industriales.',
+              'Director de Project Management certificado PMP para liderar proyectos estratégicos y transformación organizacional.',
+              'Gerente de RRHH especializado en desarrollo organizacional, gestión del talento y cultura empresarial.',
+              'Jefe de Relaciones Públicas y Comunicaciones para gestionar imagen corporativa y relaciones con stakeholders externos.',
+              'Director de Sistemas y Tecnología para liderar transformación digital, infraestructura IT y innovación tecnológica.',
+              'Asistente Ejecutiva para CEO con alta capacidad organizativa, manejo de agenda ejecutiva y coordinación de proyectos estratégicos.',
             ],
             isUnique: true,
           }),
@@ -585,8 +631,9 @@ export class SeedService {
             minValue: 9000,
             maxValue: 9002,
           }),
-          createdAt: f.default({
-            defaultValue: new Date(),
+          createdAt: f.date({
+            minDate: new Date('2024-01-01'),
+            maxDate: new Date('2025-01-01'),
           }),
           updatedAt: f.default({
             defaultValue: new Date(),

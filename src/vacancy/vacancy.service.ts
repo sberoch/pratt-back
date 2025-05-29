@@ -527,12 +527,12 @@ export class VacancyService {
       );
     }
 
-    if (query.createdBy) {
-      filters.push(eq(vacancies.createdBy, query.createdBy));
+    if (query.createdById) {
+      filters.push(eq(vacancies.createdBy, query.createdById));
     }
 
-    if (query.assignedTo) {
-      filters.push(eq(vacancies.assignedTo, query.assignedTo));
+    if (query.assignedToId) {
+      filters.push(eq(vacancies.assignedTo, query.assignedToId));
     }
 
     return filters.length > 0 ? and(...filters) : undefined;

@@ -105,81 +105,81 @@ export class CreateCandidateDto {
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
 
 export class CandidateQueryParams extends PaginationParams {
-  @ApiProperty({ example: 1, required: false })
+  @ApiProperty({ required: false })
   id?: number;
 
-  @ApiProperty({ example: 'John', required: false })
+  @ApiProperty({ required: false })
   name?: string;
 
-  @ApiProperty({ example: 18, required: false })
+  @ApiProperty({ required: false })
   minimumAge?: number;
 
-  @ApiProperty({ example: 30, required: false })
+  @ApiProperty({ required: false })
   maximumAge?: number;
 
-  @ApiProperty({ example: 'Male', required: false })
+  @ApiProperty({ required: false })
   gender?: string;
 
-  @ApiProperty({ example: 'This is a short description', required: false })
+  @ApiProperty({ required: false })
   shortDescription?: string;
 
-  @ApiProperty({ example: 'johndoe@gmail.com', required: false })
+  @ApiProperty({ required: false })
   email?: string;
 
-  @ApiProperty({ example: 'https://linkedin.com/in/johndoe', required: false })
+  @ApiProperty({ required: false })
   linkedin?: string;
 
-  @ApiProperty({ example: 'Street 1234', required: false })
+  @ApiProperty({ required: false })
   address?: string;
 
-  @ApiProperty({ example: '40000000', required: false })
+  @ApiProperty({ required: false })
   documentNumber?: string;
 
-  @ApiProperty({ example: '1512345678', required: false })
+  @ApiProperty({ required: false })
   phone?: string;
 
   @ApiProperty({ required: false })
   country?: string;
 
-  @ApiProperty({ example: 1, required: false })
+  @ApiProperty({ required: false })
   sourceId?: number;
 
-  @ApiProperty({ example: [1], required: false, type: [Number] })
+  @ApiProperty({ required: false, type: [Number] })
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   seniorityIds?: number[];
 
-  @ApiProperty({ example: [1], required: false, type: [Number] })
+  @ApiProperty({ required: false, type: [Number] })
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   areaIds?: number[];
 
-  @ApiProperty({ example: [1], required: false, type: [Number] })
+  @ApiProperty({ required: false, type: [Number] })
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   industryIds?: number[];
 
-  @ApiProperty({ example: [1], required: false, type: [Number] })
+  @ApiProperty({ required: false, type: [Number] })
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   fileIds?: number[];
 
-  @ApiProperty({ example: 3.4, required: false })
+  @ApiProperty({ required: false })
   minimumStars?: number;
 
-  @ApiProperty({ example: 3.4, required: false })
+  @ApiProperty({ required: false })
   maximumStars?: number;
 
-  @ApiProperty({ example: false, required: false })
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsBooleanString()
   blacklisted?: boolean;
 
-  @ApiProperty({ example: false, required: false })
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsBooleanString()
   deleted?: boolean;

@@ -3,7 +3,7 @@ import { PaginationParams } from '../common/pagination/pagination.params';
 import { IsString } from 'class-validator';
 
 export class CreateVacancyStatusDto {
-  @ApiProperty({ example: 'Open' })
+  @ApiProperty({ example: 'Abierta' })
   @IsString()
   name: string;
 }

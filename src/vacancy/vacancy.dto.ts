@@ -108,12 +108,12 @@ export class VacancyQueryParams extends PaginationParams {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsNumberString()
-  createdBy?: number;
+  createdById?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsNumberString()
-  assignedTo?: number;
+  assignedToId?: number;
 
   @ApiProperty({ required: false, type: [Number] })
   @IsArray()
