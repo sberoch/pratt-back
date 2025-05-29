@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgEnum, pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import { vacancies } from './vacancy.schema';
 import { CompanyStatus } from '../../../company/company.status';
 
@@ -13,6 +13,7 @@ export const companies = pgTable('companies', {
   name: text('name').notNull(),
   description: text('description').notNull(),
   status: companyStatusEnum('status').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
 export const companyRelations = relations(companies, ({ many }) => ({
