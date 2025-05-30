@@ -42,7 +42,11 @@ export class CandidateVacancyService {
       offset: paginationQuery.offset,
       with: {
         candidate: true,
-        vacancy: true,
+        vacancy: {
+          with: {
+            company: true
+          }
+        },
         candidateVacancyStatus: true,
       },
     });
@@ -64,7 +68,11 @@ export class CandidateVacancyService {
       where: eq(candidateVacancies.id, id),
       with: {
         candidate: true,
-        vacancy: true,
+        vacancy: {
+          with: {
+            company: true
+          }
+        },
         candidateVacancyStatus: true,
       },
     });
