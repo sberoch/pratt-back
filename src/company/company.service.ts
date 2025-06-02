@@ -117,7 +117,7 @@ export class CompanyService {
       filters.push(eq(companies.id, params.id));
     }
     if (params.name) {
-      filters.push(ilike(companies.name, params.name));
+      filters.push(ilike(companies.name, `%${params.name}%`));
     }
     if (params.description) {
       filters.push(ilike(companies.description, params.description));
