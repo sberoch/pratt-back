@@ -566,11 +566,7 @@ export class SeedService {
       vacancies: {
         count: 15,
         columns: {
-          id: f.int({
-            minValue: 9000,
-            maxValue: 9014,
-            isUnique: true,
-          }),
+          id: f.intPrimaryKey(),
           companyId: f.int({
             minValue: 9000,
             maxValue: 9005,
@@ -655,8 +651,8 @@ export class SeedService {
             isUnique: true,
           }),
           vacancyId: f.int({
-            minValue: 9000,
-            maxValue: 9002,
+            minValue: 1,
+            maxValue: 3,
           }),
           candidateVacancyStatusId: f.int({
             minValue: 9000,
@@ -684,7 +680,7 @@ export class SeedService {
           }),
           active: f.default({ defaultValue: true }),
           email: f.valuesFromArray({
-            values: ['sberoch@fi.uba.ar', 'admin@admin.com', 'admin@gmail.com'],
+            values: ['sberoch@gmail.com', 'ec@pratt.com.ar', 'admin@gmail.com'],
             isUnique: true,
           }),
           name: f.fullName(),
