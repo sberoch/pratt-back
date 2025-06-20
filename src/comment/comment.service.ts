@@ -90,15 +90,6 @@ export class CommentService {
       throw new BadRequestException('User ID mismatch');
     }
 
-    const createdAt = new Date(existingComment.createdAt);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - createdAt.getTime());
-
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    if (diffDays > 1) {
-      throw new BadRequestException('Comment is older than 1 day');
-    }
-
     const [comment] = await this.db
       .update(comments)
       .set(updateCommentDto)

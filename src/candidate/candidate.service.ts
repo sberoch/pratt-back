@@ -47,6 +47,7 @@ import {
   Blacklist,
   blacklists,
 } from '../common/database/schemas/blacklist.schema';
+import { Comment } from '../common/database/schemas/comment.schema';
 
 type CandidateQueryResult = Candidate & {
   source: CandidateSource;
@@ -55,6 +56,7 @@ type CandidateQueryResult = Candidate & {
   candidateSeniorities: Array<{ seniority: Seniority }>;
   candidateFilesRelation: Array<{ file: CandidateFile }>;
   blacklist: Blacklist;
+  comments: Comment[];
 };
 
 export type CandidateApiResponse = Omit<Candidate, 'deleted'> & {
@@ -64,6 +66,7 @@ export type CandidateApiResponse = Omit<Candidate, 'deleted'> & {
   seniorities: Seniority[];
   files: CandidateFile[];
   blacklist: Blacklist;
+  comments: Comment[];
 };
 
 @Injectable()
@@ -89,6 +92,7 @@ export class CandidateService {
         candidateSeniorities: { with: { seniority: true } },
         candidateFilesRelation: { with: { file: true } },
         blacklist: true,
+        comments: true,
       },
     });
 
@@ -116,6 +120,7 @@ export class CandidateService {
         candidateSeniorities: { with: { seniority: true } },
         candidateFilesRelation: { with: { file: true } },
         blacklist: true,
+        comments: true,
       },
     });
     if (!candidate) throw new NotFoundException('Candidate not found');
@@ -257,6 +262,7 @@ export class CandidateService {
       candidateFilesRelation,
       source,
       blacklist,
+      comments,
       ...rest
     } = result;
     return {
@@ -273,6 +279,7 @@ export class CandidateService {
         .map((cfj) => cfj.file)
         .filter(Boolean),
       blacklist: result.blacklist,
+      comments: result.comments,
     };
   }
 

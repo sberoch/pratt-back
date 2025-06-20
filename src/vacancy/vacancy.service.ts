@@ -7,30 +7,25 @@ import {
 import {
   and,
   asc,
-  ColumnAliasProxyHandler,
   count,
   desc,
   eq,
   ilike,
   inArray,
+  or,
   SQL,
+  sql,
 } from 'drizzle-orm';
-import { Vacancy, vacancies } from '../common/database/schemas/vacancy.schema';
+import { Area } from 'src/common/database/schemas/area.schema';
+import { Industry } from 'src/common/database/schemas/industry.schema';
+import { Seniority } from 'src/common/database/schemas/seniority.schema';
 import { DrizzleProvider } from '../common/database/drizzle.module';
-import { DrizzleDatabase } from '../common/database/types/drizzle';
-import { PaginatedResponse } from '../common/pagination/pagination.params';
-import {
-  buildPaginationQuery,
-  paginatedResponse,
-} from '../common/pagination/pagination.utils';
-import {
-  VacancyQueryParams,
-  CreateVacancyDto,
-  UpdateVacancyDto,
-} from './vacancy.dto';
 import { Candidate } from '../common/database/schemas/candidate.schema';
+import { CandidateVacancy as CandidateVacancySchema } from '../common/database/schemas/candidatevacancy.schema';
+import { CandidateVacancyStatus } from '../common/database/schemas/candidatevacancystatus.schema';
 import { Company } from '../common/database/schemas/company.schema';
-import { VacancyStatus } from '../common/database/schemas/vacancystatus.schema';
+import { User } from '../common/database/schemas/user.schema';
+import { vacancies, Vacancy } from '../common/database/schemas/vacancy.schema';
 import {
   vacancyFilters,
   VacancyFilters,
@@ -41,12 +36,18 @@ import {
   vacancyFiltersSeniorities,
   VacancyFiltersSeniority,
 } from '../common/database/schemas/vacancyfilters.schema';
-import { User } from '../common/database/schemas/user.schema';
-import { CandidateVacancyStatus } from '../common/database/schemas/candidatevacancystatus.schema';
-import { CandidateVacancy as CandidateVacancySchema } from '../common/database/schemas/candidatevacancy.schema';
-import { Area } from 'src/common/database/schemas/area.schema';
-import { Seniority } from 'src/common/database/schemas/seniority.schema';
-import { Industry } from 'src/common/database/schemas/industry.schema';
+import { VacancyStatus } from '../common/database/schemas/vacancystatus.schema';
+import { DrizzleDatabase } from '../common/database/types/drizzle';
+import { PaginatedResponse } from '../common/pagination/pagination.params';
+import {
+  buildPaginationQuery,
+  paginatedResponse,
+} from '../common/pagination/pagination.utils';
+import {
+  CreateVacancyDto,
+  UpdateVacancyDto,
+  VacancyQueryParams,
+} from './vacancy.dto';
 
 type VacancyQueryResult = Omit<Vacancy, 'assignedTo' | 'createdBy'> & {
   status: VacancyStatus;
@@ -548,6 +549,15 @@ export class VacancyService {
 
     if (query.assignedToId) {
       filters.push(eq(vacancies.assignedTo, query.assignedToId));
+    }
+
+    if (query.search) {
+      filters.push(
+        or(
+          ilike(vacancies.title, `%${query.search}%`),
+          ilike(sql`${vacancies.id}::text`, `%${query.search}%`),
+        ),
+      );
     }
 
     return filters.length > 0 ? and(...filters) : undefined;

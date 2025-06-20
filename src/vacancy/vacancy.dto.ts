@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { PaginationParams } from '../common/pagination/pagination.params';
+import { Transform, Type } from 'class-transformer';
 import {
   IsArray,
   IsInt,
@@ -8,9 +8,8 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
-  ValidateNested,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { PaginationParams } from '../common/pagination/pagination.params';
 
 class VacancyFiltersDto {
   @ApiProperty({ required: false, type: [Number] })
@@ -133,26 +132,31 @@ export class VacancyQueryParams extends PaginationParams {
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   filterIndustryIds?: number[];
 
-  @ApiProperty({ required: false, example: 1 })
+  @ApiProperty({ required: false })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   filterMinStars?: number;
 
-  @ApiProperty({ required: false, example: 'Male' })
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   filterGender?: string;
 
-  @ApiProperty({ required: false, example: 18 })
+  @ApiProperty({ required: false })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   filterMinAge?: number;
 
-  @ApiProperty({ required: false, example: 30 })
+  @ApiProperty({ required: false })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   filterMaxAge?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  search?: string;
 }

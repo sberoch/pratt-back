@@ -20,8 +20,8 @@ export class CreateCandidateDto {
   name: string;
 
   @ApiProperty({ example: 'https://example.com/image.jpg' })
-  @IsString()
   @IsOptional()
+  @IsString()
   image: string;
 
   @ApiProperty({ example: '1990-01-01' })
@@ -35,28 +35,27 @@ export class CreateCandidateDto {
   gender: string;
 
   @ApiProperty({ example: 'This is a short description' })
-  @IsString()
   @IsOptional()
+  @IsString()
   shortDescription: string;
 
   @ApiProperty({ example: 'johndoe@gmail.com' })
   @IsOptional()
-  @IsEmail()
   email: string;
 
   @ApiProperty({ example: 'https://linkedin.com/in/johndoe' })
-  @IsString()
   @IsOptional()
+  @IsString()
   linkedin: string;
 
   @ApiProperty({ example: 'Street 1234' })
-  @IsString()
   @IsOptional()
+  @IsString()
   address: string;
 
   @ApiProperty({ example: '40000000' })
-  @IsString()
   @IsOptional()
+  @IsString()
   documentNumber: string;
 
   @ApiProperty({ example: '1512345678' })
@@ -97,8 +96,8 @@ export class CreateCandidateDto {
   isInCompanyViaPratt: boolean;
 
   @ApiProperty({ example: 'Argentina' })
-  @IsString()
   @IsOptional()
+  @IsString()
   country: string;
 }
 
@@ -145,26 +144,26 @@ export class CandidateQueryParams extends PaginationParams {
   sourceId?: number;
 
   @ApiProperty({ required: false, type: [Number] })
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   seniorityIds?: number[];
 
   @ApiProperty({ required: false, type: [Number] })
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   areaIds?: number[];
 
   @ApiProperty({ required: false, type: [Number] })
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   industryIds?: number[];
 
   @ApiProperty({ required: false, type: [Number] })
-  @IsArray()
   @IsOptional()
+  @IsArray()
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   fileIds?: number[];
 
