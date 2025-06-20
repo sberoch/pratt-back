@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git filter-branch --env-filter '
-OLD_EMAIL="emmanuelguerreiro98@gmail.com"
+OLD_EMAIL="Nachonitz@gmail.com"
 CORRECT_NAME="Santiago Beroch"
 CORRECT_EMAIL="sberoch@gmail.com"
 
