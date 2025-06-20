@@ -80,8 +80,11 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    if (updateUserDto.password) {
+    if (updateUserDto.password && updateUserDto.password !== '') {
       updateUserDto.password = await hashPassword(updateUserDto.password);
+    }
+    if (updateUserDto.password === '') {
+      delete updateUserDto.password;
     }
     let [user] = await this.db
       .update(users)
