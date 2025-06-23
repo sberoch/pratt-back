@@ -220,16 +220,18 @@ export class CandidateService {
         );
       }
 
-      if (updateCandidateDto.fileIds?.length) {
+      if (updateCandidateDto.fileIds !== undefined) {
         await tx
           .delete(candidateFilesRelation)
           .where(eq(candidateFilesRelation.candidateId, id));
-        await tx.insert(candidateFilesRelation).values(
-          updateCandidateDto.fileIds.map((fileId) => ({
-            candidateId: id,
-            fileId,
-          })),
-        );
+        if (updateCandidateDto.fileIds.length > 0) {
+          await tx.insert(candidateFilesRelation).values(
+            updateCandidateDto.fileIds.map((fileId) => ({
+              candidateId: id,
+              fileId,
+            })),
+          );
+        }
       }
       return candidate;
     });
