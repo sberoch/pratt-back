@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, SQL } from 'drizzle-orm';
 import {
   candidateVacancies,
   CandidateVacancy,
@@ -206,6 +206,12 @@ export class CandidateVacancyService {
 
     if (params.id) {
       filters.push(eq(candidateVacancies.id, params.id));
+    }
+
+    if (params.candidateIds && params.candidateIds.length > 0) {
+      filters.push(
+        inArray(candidateVacancies.candidateId, params.candidateIds),
+      );
     }
 
     if (params.candidateId) {
