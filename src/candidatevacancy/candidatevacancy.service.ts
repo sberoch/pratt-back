@@ -44,8 +44,8 @@ export class CandidateVacancyService {
         candidate: true,
         vacancy: {
           with: {
-            company: true
-          }
+            company: true,
+          },
         },
         candidateVacancyStatus: true,
       },
@@ -70,8 +70,8 @@ export class CandidateVacancyService {
         candidate: true,
         vacancy: {
           with: {
-            company: true
-          }
+            company: true,
+          },
         },
         candidateVacancyStatus: true,
       },
@@ -82,6 +82,27 @@ export class CandidateVacancyService {
 
   async create(createCandidateVacancyDto: CreateCandidateVacancyDto) {
     return await this.db.transaction(async (tx) => {
+      // Check if candidate-vacancy combination already exists
+      const existingCandidateVacancy =
+        await tx.query.candidateVacancies.findFirst({
+          where: and(
+            eq(
+              candidateVacancies.candidateId,
+              createCandidateVacancyDto.candidateId,
+            ),
+            eq(
+              candidateVacancies.vacancyId,
+              createCandidateVacancyDto.vacancyId,
+            ),
+          ),
+        });
+
+      if (existingCandidateVacancy) {
+        throw new BadRequestException(
+          'Candidate is already associated with this vacancy',
+        );
+      }
+
       const status = await tx.query.candidateVacancyStatuses.findFirst({
         where: eq(
           candidateVacancyStatuses.id,
