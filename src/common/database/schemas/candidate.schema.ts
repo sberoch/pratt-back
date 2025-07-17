@@ -19,7 +19,7 @@ import { comments } from './comment.schema';
 
 export const candidates = pgTable('candidates', {
   id: serial('id').primaryKey(),
-  name: text('name').notNull(),
+  name: text('name').notNull().unique(),
   image: text('image'),
   dateOfBirth: date('date_of_birth'),
   gender: text('gender'),
@@ -27,7 +27,6 @@ export const candidates = pgTable('candidates', {
   email: text('email').notNull(),
   linkedin: text('linkedin'),
   address: text('address'),
-  documentNumber: text('document_number'),
   phone: text('phone'),
   deleted: boolean('deleted').default(false),
   sourceId: integer('source_id').references(() => candidateSources.id, {
@@ -36,6 +35,8 @@ export const candidates = pgTable('candidates', {
   stars: numeric('stars'),
   isInCompanyViaPratt: boolean('is_in_company_via_pratt'),
   country: text('country').notNull().default('Argentina'),
+  province: text('province'),
+  language: text('language').default('Español'),
 });
 
 export const candidatesRelations = relations(candidates, ({ one, many }) => ({

@@ -1,5 +1,9 @@
+name: pratt-app
+
 services:
   postgres:
+    container_name: pratt-postgres
+    restart: always
     image: postgres:15.1
     ports:
       - '${DB_PORT}:5432'
@@ -13,6 +17,8 @@ services:
       - ./data:/var/lib/postgresql/data
 
   main:
+    container_name: pratt-main
+    restart: always
     build:
       context: .
     volumes:

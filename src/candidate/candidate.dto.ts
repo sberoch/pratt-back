@@ -53,11 +53,6 @@ export class CreateCandidateDto {
   @IsString()
   address: string;
 
-  @ApiProperty({ example: '40000000' })
-  @IsOptional()
-  @IsString()
-  documentNumber: string;
-
   @ApiProperty({ example: '1512345678' })
   @IsOptional()
   phone: string;
@@ -99,6 +94,16 @@ export class CreateCandidateDto {
   @IsOptional()
   @IsString()
   country: string;
+
+  @ApiProperty({ example: 'Buenos Aires' })
+  @IsOptional()
+  @IsString()
+  province: string;
+
+  @ApiProperty({ example: 'Español' })
+  @IsOptional()
+  @IsString()
+  language: string;
 }
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
@@ -132,13 +137,22 @@ export class CandidateQueryParams extends PaginationParams {
   address?: string;
 
   @ApiProperty({ required: false })
-  documentNumber?: string;
-
-  @ApiProperty({ required: false })
   phone?: string;
 
   @ApiProperty({ required: false })
   country?: string;
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  provinces?: string[];
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  languages?: string[];
 
   @ApiProperty({ required: false })
   sourceId?: number;

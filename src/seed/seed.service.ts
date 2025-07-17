@@ -317,13 +317,20 @@ export class SeedService {
             ],
             isUnique: true,
           }),
-          documentNumber: f.int({
-            isUnique: true,
-            minValue: 20000000,
-            maxValue: 45000000,
-          }),
           country: f.default({
             defaultValue: 'Argentina',
+          }),
+          province: f.valuesFromArray({
+            values: [
+              'Buenos Aires',
+              'Córdoba',
+              'Santa Fe',
+              'Mendoza',
+              'Chubut',
+            ],
+          }),
+          language: f.valuesFromArray({
+            values: ['Español', 'Portugués'],
           }),
           deleted: f.default({
             defaultValue: false,
