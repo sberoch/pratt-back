@@ -37,6 +37,12 @@ export class CandidateController {
   }
 
   @ApiOkResponse()
+  @Get('exists')
+  async exists(@Query('name') name: string) {
+    return this.candidateService.existsByName(name);
+  }
+
+  @ApiOkResponse()
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.candidateService.findOne(+id);

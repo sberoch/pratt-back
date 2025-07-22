@@ -127,6 +127,13 @@ export class CandidateService {
     return this.transformQueryResult(candidate);
   }
 
+  async existsByName(name: string): Promise<{ exists: boolean }> {
+    const candidate = await this.db.query.candidates.findFirst({
+      where: ilike(candidates.name, name),
+    });
+    return { exists: !!candidate };
+  }
+
   async create(createCandidateDto: CreateCandidateDto) {
     return this.db.transaction(async (tx) => {
       const [candidate] = await tx
