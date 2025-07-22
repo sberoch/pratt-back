@@ -1,17 +1,16 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { PaginationParams } from '../common/pagination/pagination.params';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsBooleanString,
-  IsEmail,
   IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { PaginationParams } from '../common/pagination/pagination.params';
 
 export class CreateCandidateDto {
   @ApiProperty({ example: 'John' })
@@ -90,20 +89,20 @@ export class CreateCandidateDto {
   @IsBoolean()
   isInCompanyViaPratt: boolean;
 
-  @ApiProperty({ example: 'Argentina' })
-  @IsOptional()
-  @IsString()
-  country: string;
+  @ApiProperty({ example: ['Argentina', 'Chile'] })
+  @IsArray()
+  @IsString({ each: true })
+  countries: string[];
 
-  @ApiProperty({ example: 'Buenos Aires' })
-  @IsOptional()
-  @IsString()
-  province: string;
+  @ApiProperty({ example: ['Buenos Aires', 'Córdoba'] })
+  @IsArray()
+  @IsString({ each: true })
+  provinces: string[];
 
-  @ApiProperty({ example: 'Español' })
-  @IsOptional()
-  @IsString()
-  language: string;
+  @ApiProperty({ example: ['Español', 'Inglés'] })
+  @IsArray()
+  @IsString({ each: true })
+  languages: string[];
 }
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
@@ -139,8 +138,11 @@ export class CandidateQueryParams extends PaginationParams {
   @ApiProperty({ required: false })
   phone?: string;
 
-  @ApiProperty({ required: false })
-  country?: string;
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  countries?: string[];
 
   @ApiProperty({ required: false, type: [String] })
   @IsOptional()

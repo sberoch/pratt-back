@@ -34,9 +34,9 @@ export const candidates = pgTable('candidates', {
   }),
   stars: numeric('stars'),
   isInCompanyViaPratt: boolean('is_in_company_via_pratt'),
-  country: text('country').notNull().default('Argentina'),
-  province: text('province'),
-  language: text('language').default('Español'),
+  countries: text('countries').array().default([]),
+  provinces: text('provinces').array().default([]),
+  languages: text('languages').array().default([]),
 });
 
 export const candidatesRelations = relations(candidates, ({ one, many }) => ({

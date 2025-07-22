@@ -543,6 +543,75 @@ export class VacancyService {
       );
     }
 
+    if (query.filterCountries?.length) {
+      const arr = query.filterCountries;
+      const sqlArray = sql`ARRAY[${sql.join(
+        arr.map((v) => sql`${v}`),
+        sql`, `,
+      )}]::text[]`;
+      const countriesSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(sql`${vacancyFilters.countries} && ${sqlArray}`)
+        .as('countries_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db
+            .select({ id: countriesSubquery.vacancyId })
+            .from(countriesSubquery),
+        ),
+      );
+    }
+
+    if (query.filterProvinces?.length) {
+      const arr = query.filterProvinces;
+      const sqlArray = sql`ARRAY[${sql.join(
+        arr.map((v) => sql`${v}`),
+        sql`, `,
+      )}]::text[]`;
+      const provincesSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(sql`${vacancyFilters.provinces} && ${sqlArray}`)
+        .as('provinces_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db
+            .select({ id: provincesSubquery.vacancyId })
+            .from(provincesSubquery),
+        ),
+      );
+    }
+
+    if (query.filterLanguages?.length) {
+      const arr = query.filterLanguages;
+      const sqlArray = sql`ARRAY[${sql.join(
+        arr.map((v) => sql`${v}`),
+        sql`, `,
+      )}]::text[]`;
+      const languagesSubquery = this.db
+        .select({ vacancyId: vacancies.id })
+        .from(vacancyFilters)
+        .innerJoin(vacancies, eq(vacancies.vacancyFiltersId, vacancyFilters.id))
+        .where(sql`${vacancyFilters.languages} && ${sqlArray}`)
+        .as('languages_subquery');
+
+      filters.push(
+        inArray(
+          vacancies.id,
+          this.db
+            .select({ id: languagesSubquery.vacancyId })
+            .from(languagesSubquery),
+        ),
+      );
+    }
+
     if (query.createdById) {
       filters.push(eq(vacancies.createdBy, query.createdById));
     }

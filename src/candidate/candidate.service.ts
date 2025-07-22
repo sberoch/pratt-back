@@ -17,6 +17,7 @@ import {
   lte,
   SQL,
   not,
+  sql,
 } from 'drizzle-orm';
 import { Area } from '../common/database/schemas/area.schema';
 import {
@@ -351,14 +352,68 @@ export class CandidateService {
     if (query.phone) {
       filters.push(ilike(candidates.phone, `%${query.phone}%`));
     }
-    if (query.country) {
-      filters.push(ilike(candidates.country, `%${query.country}%`));
+    if (query.countries) {
+      const arr = query.countries;
+      const sqlArray = sql`ARRAY[${sql.join(
+        arr.map((v) => sql`${v}`),
+        sql`, `,
+      )}]::text[]`;
+      const countriesSubquery = this.db
+        .select({ candidateId: candidates.id })
+        .from(candidates)
+        .where(sql`${candidates.countries} && ${sqlArray}`)
+        .as('countries_subquery');
+
+      filters.push(
+        inArray(
+          candidates.id,
+          this.db
+            .select({ id: countriesSubquery.candidateId })
+            .from(countriesSubquery),
+        ),
+      );
     }
     if (query.provinces) {
-      filters.push(inArray(candidates.province, query.provinces));
+      const arr = query.provinces;
+      const sqlArray = sql`ARRAY[${sql.join(
+        arr.map((v) => sql`${v}`),
+        sql`, `,
+      )}]::text[]`;
+      const provincesSubquery = this.db
+        .select({ candidateId: candidates.id })
+        .from(candidates)
+        .where(sql`${candidates.provinces} && ${sqlArray}`)
+        .as('provinces_subquery');
+
+      filters.push(
+        inArray(
+          candidates.id,
+          this.db
+            .select({ id: provincesSubquery.candidateId })
+            .from(provincesSubquery),
+        ),
+      );
     }
     if (query.languages) {
-      filters.push(inArray(candidates.language, query.languages));
+      const arr = query.languages;
+      const sqlArray = sql`ARRAY[${sql.join(
+        arr.map((v) => sql`${v}`),
+        sql`, `,
+      )}]::text[]`;
+      const languagesSubquery = this.db
+        .select({ candidateId: candidates.id })
+        .from(candidates)
+        .where(sql`${candidates.languages} && ${sqlArray}`)
+        .as('languages_subquery');
+
+      filters.push(
+        inArray(
+          candidates.id,
+          this.db
+            .select({ id: languagesSubquery.candidateId })
+            .from(languagesSubquery),
+        ),
+      );
     }
     if (query.minimumStars) {
       filters.push(gte(candidates.stars, String(query.minimumStars)));

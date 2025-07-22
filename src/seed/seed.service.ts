@@ -317,10 +317,10 @@ export class SeedService {
             ],
             isUnique: true,
           }),
-          country: f.default({
-            defaultValue: 'Argentina',
+          countries: f.valuesFromArray({
+            values: ['Argentina'],
           }),
-          province: f.valuesFromArray({
+          provinces: f.valuesFromArray({
             values: [
               'Buenos Aires',
               'Córdoba',
@@ -329,8 +329,8 @@ export class SeedService {
               'Chubut',
             ],
           }),
-          language: f.valuesFromArray({
-            values: ['Español', 'Portugués'],
+          languages: f.valuesFromArray({
+            values: ['Español', 'Portugués', 'Inglés'],
           }),
           deleted: f.default({
             defaultValue: false,

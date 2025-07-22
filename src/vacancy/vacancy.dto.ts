@@ -49,6 +49,24 @@ class VacancyFiltersDto {
   @IsOptional()
   @IsInt()
   maxAge?: number;
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  countries?: string[];
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  provinces?: string[];
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  languages?: string[];
 }
 
 export class CreateVacancyDto {
@@ -154,6 +172,24 @@ export class VacancyQueryParams extends PaginationParams {
   @Type(() => Number)
   @IsInt()
   filterMaxAge?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  filterCountries?: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  filterProvinces?: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsArray()
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  filterLanguages?: string[];
 
   @ApiProperty({ required: false })
   @IsOptional()

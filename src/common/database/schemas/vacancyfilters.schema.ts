@@ -10,6 +10,9 @@ export const vacancyFilters = pgTable('vacancy_filters', {
   gender: text('gender'),
   minAge: integer('min_age'),
   maxAge: integer('max_age'),
+  countries: text('countries').array(),
+  provinces: text('provinces').array(),
+  languages: text('languages').array(),
 });
 
 export const vacancyFiltersRelations = relations(
