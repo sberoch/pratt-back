@@ -360,13 +360,15 @@ export class VacancyService {
           }
         : null,
       company: result.company,
-      candidates: result.candidateVacancies.map((cv) => {
-        const { candidateVacancyStatus, ...rest } = cv;
-        return {
-          ...rest,
-          status: candidateVacancyStatus,
-        };
-      }),
+      candidates: result.candidateVacancies
+        .map((cv) => {
+          const { candidateVacancyStatus, ...rest } = cv;
+          return {
+            ...rest,
+            status: candidateVacancyStatus,
+          };
+        })
+        .filter((c) => c.candidate.deleted === false),
       createdBy: createdBy,
       assignedTo: assignedTo,
     };

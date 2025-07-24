@@ -247,14 +247,19 @@ export class CandidateService {
   }
 
   async remove(id: number) {
-    const [candidate] = await this.db
+    const candidate = await this.db.query.candidates.findFirst({
+      where: eq(candidates.id, id),
+    });
+    if (!candidate) throw new NotFoundException('Candidate not found');
+    const [removedCandidate] = await this.db
       .update(candidates)
       .set({
         deleted: true,
+        name: `${candidate.name} (deleted)`,
       } as Partial<Candidate>)
       .where(eq(candidates.id, id))
       .returning();
-    return candidate;
+    return removedCandidate;
   }
 
   /**
