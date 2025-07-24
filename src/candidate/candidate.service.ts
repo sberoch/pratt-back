@@ -130,7 +130,7 @@ export class CandidateService {
 
   async existsByName(name: string): Promise<{ exists: boolean }> {
     const candidate = await this.db.query.candidates.findFirst({
-      where: ilike(candidates.name, name),
+      where: and(ilike(candidates.name, name), eq(candidates.deleted, false)),
     });
     return { exists: !!candidate };
   }
