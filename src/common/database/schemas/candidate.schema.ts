@@ -6,6 +6,7 @@ import {
   pgTable,
   serial,
   text,
+  timestamp,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -37,6 +38,8 @@ export const candidates = pgTable('candidates', {
   countries: text('countries').array().default([]),
   provinces: text('provinces').array().default([]),
   languages: text('languages').array().default([]),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 export const candidatesRelations = relations(candidates, ({ one, many }) => ({

@@ -211,6 +211,13 @@
       "when": 1753216686905,
       "tag": "0030_acoustic_leo",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1753972809992,
+      "tag": "0031_yellow_clea",
+      "breakpoints": true
     }
   ]
 }
