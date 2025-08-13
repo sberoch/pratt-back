@@ -18,6 +18,21 @@ export class CreateCompanyDto {
   @IsNotEmpty()
   @IsEnum(CompanyStatus)
   status: CompanyStatus;
+
+  @ApiProperty({ example: 'Jane Doe', required: false })
+  @IsOptional()
+  @IsString()
+  clientName?: string;
+
+  @ApiProperty({ example: 'jane@client.com', required: false })
+  @IsOptional()
+  @IsString()
+  clientEmail?: string;
+
+  @ApiProperty({ example: '+1-555-1234567', required: false })
+  @IsOptional()
+  @IsString()
+  clientPhone?: string;
 }
 
 export class UpdateCompanyDto extends PartialType(CreateCompanyDto) {}

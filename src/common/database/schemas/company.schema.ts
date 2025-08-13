@@ -13,6 +13,9 @@ export const companies = pgTable('companies', {
   name: text('name').notNull(),
   description: text('description').notNull(),
   status: companyStatusEnum('status').notNull(),
+  clientName: text('client_name'),
+  clientEmail: text('client_email'),
+  clientPhone: text('client_phone'),
   createdAt: timestamp('created_at').defaultNow(),
 });
 

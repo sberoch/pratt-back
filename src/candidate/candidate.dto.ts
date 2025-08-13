@@ -23,10 +23,10 @@ export class CreateCandidateDto {
   @IsString()
   image: string;
 
-  @ApiProperty({ example: '1990-01-01' })
+  @ApiProperty({ example: '1990-01-01', required: false })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  dateOfBirth: string;
+  dateOfBirth?: string;
 
   @ApiProperty({ example: 'Male' })
   @IsString()
