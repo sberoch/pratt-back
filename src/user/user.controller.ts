@@ -29,7 +29,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get()
   async findAll(@Query() query: UserQueryParams) {
     return this.userService.findAll(query);
@@ -49,6 +49,7 @@ export class UserController {
   }
 
   @ApiOkResponse()
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);

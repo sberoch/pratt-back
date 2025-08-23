@@ -22,6 +22,8 @@ import {
   CompanyQueryParams,
 } from './company.dto';
 import { RolesGuard } from '../auth/roles/roles.guard';
+import { Roles } from '../auth/roles/roles.decorator';
+import { UserRole } from '../user/user.roles';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
