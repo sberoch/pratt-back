@@ -42,6 +42,7 @@ import {
 import {
   CandidateQueryParams,
   CreateCandidateDto,
+  BlacklistCandidateDto,
   UpdateCandidateDto,
 } from './candidate.dto';
 import {
@@ -49,6 +50,7 @@ import {
   blacklists,
 } from '../common/database/schemas/blacklist.schema';
 import { Comment } from '../common/database/schemas/comment.schema';
+import { User } from '../common/database/schemas/user.schema';
 
 type CandidateQueryResult = Candidate & {
   source: CandidateSource;
@@ -196,6 +198,19 @@ export class CandidateService {
 
       return candidate;
     });
+  }
+
+  async blacklist(
+    blacklistCandidateDto: BlacklistCandidateDto,
+    user: User,
+    id: number,
+  ) {
+    await this.db.insert(blacklists).values({
+      ...blacklistCandidateDto,
+      candidateId: id,
+      userId: user.id,
+    });
+    return this.findOne(id);
   }
 
   async update(id: number, updateCandidateDto: UpdateCandidateDto) {

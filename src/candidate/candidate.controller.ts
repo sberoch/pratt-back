@@ -20,8 +20,11 @@ import {
   CreateCandidateDto,
   UpdateCandidateDto,
   CandidateQueryParams,
+  BlacklistCandidateDto,
 } from './candidate.dto';
 import { RolesGuard } from '../auth/roles/roles.guard';
+import { User } from '../common/database/schemas/user.schema';
+import { CurrentUser } from '../auth/auth.decorators';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -52,6 +55,16 @@ export class CandidateController {
   @Post()
   async create(@Body() createCandidateDto: CreateCandidateDto) {
     return this.candidateService.create(createCandidateDto);
+  }
+
+  @ApiCreatedResponse()
+  @Post(':id/blacklist')
+  async blacklist(
+    @Param('id') id: string,
+    @Body() blacklistCandidateDto: BlacklistCandidateDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.candidateService.blacklist(blacklistCandidateDto, user, +id);
   }
 
   @ApiOkResponse()

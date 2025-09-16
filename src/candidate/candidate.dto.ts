@@ -107,6 +107,12 @@ export class CreateCandidateDto {
 
 export class UpdateCandidateDto extends PartialType(CreateCandidateDto) {}
 
+export class BlacklistCandidateDto {
+  @ApiProperty({ example: 'This is a reason' })
+  @IsString()
+  reason: string;
+}
+
 export class CandidateQueryParams extends PaginationParams {
   @ApiProperty({ required: false })
   id?: number;
