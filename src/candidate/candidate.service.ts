@@ -128,11 +128,25 @@ export class CandidateService {
     return this.transformQueryResult(candidate);
   }
 
-  async existsByName(name: string): Promise<{ exists: boolean }> {
+  async existsByName(
+    name: string,
+  ): Promise<{ exists: boolean; candidate: CandidateApiResponse | null }> {
     const candidate = await this.db.query.candidates.findFirst({
       where: and(ilike(candidates.name, name), eq(candidates.deleted, false)),
+      with: {
+        source: true,
+        candidateAreas: { with: { area: true } },
+        candidateIndustries: { with: { industry: true } },
+        candidateSeniorities: { with: { seniority: true } },
+        candidateFilesRelation: { with: { file: true } },
+        blacklist: true,
+        comments: true,
+      },
     });
-    return { exists: !!candidate };
+    return {
+      exists: !!candidate,
+      candidate: candidate ? this.transformQueryResult(candidate) : null,
+    };
   }
 
   async create(createCandidateDto: CreateCandidateDto) {
