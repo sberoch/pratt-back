@@ -24,5 +24,9 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            echo "Deployment placeholder"
-            node -v
+            cd pratt/back
+            git pull origin main
+            git checkout main
+            docker compose down
+            docker compose up --build -d
+            npm run db:migrate
